@@ -68,7 +68,7 @@ Personal site to showcase projects, technical skills, and professional experienc
 ## Contact
 
 - Email: your-email@example.com
-- LinkedIn: https://linkedin.com/in/your-profile
+- LinkedIn: https://linkedin.com/in/muhammad-ahm
 - GitHub: https://github.com/muhammad-ahm
 
 ---

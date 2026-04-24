@@ -6,7 +6,6 @@
 
 [![Email](https://img.shields.io/badge/Email-muhammzd.ahmed.mh%40gmail.com-blue?style=flat-square&logo=gmail&logoColor=white)](mailto:muhammzd.ahmed.mh@gmail.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Muhammad%20Ahmed-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/Muhammad-ahm)
-[![GitHub](https://img.shields.io/badge/GitHub-muhammad--ahm-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/muhammad-ahm)
 [![Location](https://img.shields.io/badge/Karachi%2C%20Pakistan-grey?style=flat-square&logo=googlemaps&logoColor=white)]()
 
 </div>

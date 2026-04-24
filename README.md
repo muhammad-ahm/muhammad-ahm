@@ -23,16 +23,87 @@ Currently deepening my skills in React.js and exploring the game development pip
 
 ---
 
-## Services
+## What I Can Do For You
 
-| What I do | Details |
-|---|---|
-| **Web Development** | Responsive websites built with HTML, CSS, JavaScript, PHP |
-| **WordPress Development** | Theme customization, plugin integration, performance & SEO |
-| **UI/UX Design** | Clean, user-friendly interfaces designed in Figma |
-| **React Development** | Component-based frontends with React.js |
-| **Database Integration** | MySQL-backed applications with structured data |
-| **Debugging & Fixes** | Issue diagnosis and resolution in live environments |
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>Web Development</h3>
+      Responsive, functional websites built with HTML, CSS, JavaScript, and PHP — from scratch or on top of existing codebases.
+    </td>
+    <td width="50%" valign="top">
+      <h3>WordPress Development</h3>
+      Theme customization, plugin integration, performance tuning, and SEO — websites that work well, not just look good.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>UI/UX Design</h3>
+      Clean, user-first interfaces designed in Figma — focused on navigation that makes sense and layouts that don't confuse.
+    </td>
+    <td width="50%" valign="top">
+      <h3>React Development</h3>
+      Component-based frontends built with React.js — structured, maintainable, and ready to scale.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>Debugging & Fixes</h3>
+      Issue diagnosis and resolution in live environments — I've done it under real project constraints, not just tutorials.
+    </td>
+    <td width="50%" valign="top"></td>
+  </tr>
+</table>
+
+---
+
+## Projects
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>ForMai — Browser Extension</h3>
+      <img src="https://img.shields.io/badge/Live-formai.infinityfree.me-brightgreen?style=flat-square"/>
+      <img src="https://img.shields.io/badge/Version-v3-blue?style=flat-square"/>
+      <br><br>
+      Productivity extension that auto-fills long online forms. Built through 3 versions — currently live. Next version shipping May 2026.
+      <br><br>
+      <a href="http://formai.infinityfree.me">→ View Live</a>
+    </td>
+    <td width="50%" valign="top">
+      <h3>SZABIST Student LMS — UI/UX</h3>
+      <img src="https://img.shields.io/badge/Tool-Figma-F24E1E?style=flat-square&logo=figma&logoColor=white"/>
+      <br><br>
+      Full LMS interface designed for SZABIST University in Figma. Clean navigation and intuitive layout built for daily student use.
+      <br><br>
+      <a href="https://figma.com/design/CVruA45mTKAV1MM9X0K6KP/SZABIST-Project">→ View Design</a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>eCommerce Store</h3>
+      <img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white"/>
+      <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white"/>
+      <br><br>
+      Full-featured dual-role eCommerce system with separate Admin and Customer interfaces. My first independently built project.
+    </td>
+    <td width="50%" valign="top">
+      <h3>ToeXhek — Number Prediction Game</h3>
+      <img src="https://img.shields.io/badge/Personal%20Project-2025-lightgrey?style=flat-square"/>
+      <br><br>
+      Logic-based interactive game where the app predicts a 4-digit number chosen by the user. Built to sharpen algorithmic thinking.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>Compact Assembly Toolkit</h3>
+      <img src="https://img.shields.io/badge/Personal%20Project-2025-lightgrey?style=flat-square"/>
+      <br><br>
+      Multi-tool application combining a keyboard simulator, calculator, and a visual computer input guide.
+    </td>
+    <td width="50%" valign="top"></td>
+  </tr>
+</table>
 
 ---
 
@@ -53,9 +124,7 @@ Currently deepening my skills in React.js and exploring the game development pip
 
 ## Contact
 
-| | |
-|---|---|
-| Email | [muhammzd.ahmed.mh@gmail.com](mailto:muhammzd.ahmed.mh@gmail.com) |
-| LinkedIn | [linkedin.com/in/Muhammad-ahm](https://linkedin.com/in/Muhammad-ahm) |
-| GitHub | [github.com/muhammad-ahm](https://github.com/muhammad-ahm) |
-| Location | Karachi, Pakistan |
+Email — [muhammzd.ahmed.mh@gmail.com](mailto:muhammzd.ahmed.mh@gmail.com)
+LinkedIn — [linkedin.com/in/Muhammad-ahm](https://linkedin.com/in/Muhammad-ahm)
+GitHub — [github.com/muhammad-ahm](https://github.com/muhammad-ahm)
+Location — Karachi, Sindh, Pakistan

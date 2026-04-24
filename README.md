@@ -1,81 +1,61 @@
 <div align="center">
 
-# I turn ideas into interfaces — and interfaces into experiences.
+# Hi, I'm Muhammad Ahmed
 
-*Not just building websites. Crafting the layer between humans and systems.*
+**I help people interact with systems through interfaces that just make sense.**
 
-[![Email](https://img.shields.io/badge/Email-muhammadahmed9215%40gmail.com-blue?style=flat-square&logo=gmail&logoColor=white)](mailto:muhammadahmed9215@gmail.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Muhammad%20Ahmed-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/muhammadahm)
-[![Location](https://img.shields.io/badge/Based%20in-Karachi%2C%20Pakistan-green?style=flat-square&logo=googlemaps&logoColor=white)]()
+[![Email](https://img.shields.io/badge/Email-muhammzd.ahmed.mh%40gmail.com-blue?style=flat-square&logo=gmail&logoColor=white)](mailto:muhammzd.ahmed.mh@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Muhammad%20Ahmed-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/Muhammad-ahm)
+[![GitHub](https://img.shields.io/badge/GitHub-muhammad--ahm-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/muhammad-ahm)
+[![Location](https://img.shields.io/badge/Karachi%2C%20Pakistan-grey?style=flat-square&logo=googlemaps&logoColor=white)]()
 
 </div>
 
 ---
 
-## 👤 Who am I?
+## About
 
-- 🎓 **Computer Science Student @ SZABIST** (2024–2028) — obsessed with writing clean, logical, purposeful code
-- 💼 **WordPress Developer** (ex-Sysartx) — built & shipped responsive client websites using HTML, CSS, PHP, JavaScript & plugin ecosystems
-- 🎮 **Studying the full Game Dev Pipeline** — not just as a hobby, but as a technical discipline: system design → programming logic → gameplay workflows
+CS undergraduate at SZABIST (2024–2028) with real internship experience as a WordPress Developer at Sysartx, where I built and shipped client websites in a live production environment.
+
+I work across both design and development — from wireframing in Figma to writing the code that makes it work. I've shipped a live browser extension, designed a full LMS for my university, and built projects ranging from eCommerce systems to logic-based games.
+
+Currently deepening my skills in React.js and exploring the game development pipeline as a technical discipline.
 
 ---
 
-## 🛠️ What I bring to the table
+## Services
 
-Whether you need a **freelance project** done right, or a **collaborator** who actually thinks — here's what I do:
-
-| Service | What it means for you |
+| What I do | Details |
 |---|---|
-| 🌐 **Web Development** | Clean, responsive websites built to perform — not just look good |
-| 🎨 **WordPress Development** | Custom themes, plugin integrations, SEO & speed optimization |
-| 🧩 **UI Problem Solving** | Interfaces that make sense to the people using them |
-| ⚙️ **Frontend Engineering** | HTML · CSS · JavaScript — written with intention |
-| 🔍 **Debugging & Optimization** | I find what's broken and fix it properly |
+| **Web Development** | Responsive websites built with HTML, CSS, JavaScript, PHP |
+| **WordPress Development** | Theme customization, plugin integration, performance & SEO |
+| **UI/UX Design** | Clean, user-friendly interfaces designed in Figma |
+| **React Development** | Component-based frontends with React.js |
+| **Database Integration** | MySQL-backed applications with structured data |
+| **Debugging & Fixes** | Issue diagnosis and resolution in live environments |
 
 ---
 
-## 💻 Tech I work with
+## Tech Stack
 
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
-![C](https://img.shields.io/badge/C-00599C?style=flat-square&logo=c&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
 ![WordPress](https://img.shields.io/badge/WordPress-21759B?style=flat-square&logo=wordpress&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=flat-square&logo=figma&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
 
-```
-Languages     →  Java · C · PHP · JavaScript · HTML · CSS
-Platforms     →  WordPress · Git
-Exploring     →  Game Dev Pipeline · System Design · OOP Patterns
-Strengths     →  Error Handling · Prompt Engineering · JSON · Logical Thinking
-```
-
 ---
 
-## 🙋 A bit more about me
-
-I don't see code as just a tool — I see it as **a craft**.
-
-When I'm not coding, I'm exploring how games are engineered under the hood — not to become a game developer overnight, but because understanding complex systems makes me a sharper developer everywhere else. I care about *how* things are built, not just *that* they work.
-
-I'm early in my journey — but I move with purpose.
-
----
-
-## 📬 Let's connect
+## Contact
 
 | | |
 |---|---|
-| 📧 **Email** | [muhammadahmed9215@gmail.com](mailto:muhammadahmed9215@gmail.com) |
-| 💼 **LinkedIn** | [linkedin.com/in/muhammadahm](https://www.linkedin.com/in/muhammadahm) |
-| 🌍 **Location** | Karachi, Pakistan |
-
----
-
-<div align="center">
-
-*"The best interface is one the user never has to think about."*
-
-</div>
+| Email | [muhammzd.ahmed.mh@gmail.com](mailto:muhammzd.ahmed.mh@gmail.com) |
+| LinkedIn | [linkedin.com/in/Muhammad-ahm](https://linkedin.com/in/Muhammad-ahm) |
+| GitHub | [github.com/muhammad-ahm](https://github.com/muhammad-ahm) |
+| Location | Karachi, Pakistan |

@@ -1,46 +1,469 @@
-// ── CURSOR ──
-const cur = document.getElementById('cur');
-const ring = document.getElementById('cur-ring');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muhammad Ahmed — Web Designer & Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Mono:wght@300;400&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-document.addEventListener('mousemove', e => {
-  cur.style.left  = e.clientX + 'px';
-  cur.style.top   = e.clientY + 'px';
-  ring.style.left = e.clientX + 'px';
-  ring.style.top  = e.clientY + 'px';
-});
+<div id="cur"></div>
+<div id="cur-ring"></div>
 
-document.querySelectorAll('a,button,.proj-card,.sk-card,.tl-content').forEach(el => {
-  el.addEventListener('mouseenter', () => cur.classList.add('big'));
-  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
-});
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">MA<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#story">Story</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="mailto:muhammzd.ahmed.mh@gmail.com" class="nav-hire">Hire Me</a></li>
+  </ul>
+</nav>
 
-// ── NAV STICK ──
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('stuck', window.scrollY > 60);
-});
+<!-- ════ HERO ════ -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="dot"></div>
+      Available for work · Karachi, PK
+    </div>
+    <h1 class="hero-h1">
+      DESIGN.<br>
+      BUILD.<br>
+      <span class="italic">Ship<span class="yellow">.</span></span>
+    </h1>
+    <p class="hero-desc">
+      CS undergraduate at SZABIST building real products — from browser extensions to LMS platforms. I design with intention and develop with precision.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-y">View My Work</a>
+      <a href="#contact" class="btn-ghost-c">Let's Talk</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="hero-center">
+      <div class="ghost-text">KHI</div>
+      <div class="live-tag">[ OPEN TO WORK ]</div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-n">5+</div>
+      <div class="stat-l">Projects Shipped</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">3</div>
+      <div class="stat-l">Certifications</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">1</div>
+      <div class="stat-l">Internship</div>
+    </div>
+  </div>
+</section>
 
-// ── REVEAL ON SCROLL ──
-const revealEls = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
-}, { threshold: 0.1 });
-revealEls.forEach(el => io.observe(el));
+<!-- MARQUEE -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="tick">HTML & CSS</span>
+    <span class="tick">JavaScript</span>
+    <span class="tick">React.js</span>
+    <span class="tick">Figma</span>
+    <span class="tick">WordPress</span>
+    <span class="tick">UI/UX Design</span>
+    <span class="tick">PHP</span>
+    <span class="tick">MySQL</span>
+    <span class="tick">GitHub</span>
+    <span class="tick">AI Tools</span>
+    <span class="tick">HTML & CSS</span>
+    <span class="tick">JavaScript</span>
+    <span class="tick">React.js</span>
+    <span class="tick">Figma</span>
+    <span class="tick">WordPress</span>
+    <span class="tick">UI/UX Design</span>
+    <span class="tick">PHP</span>
+    <span class="tick">MySQL</span>
+    <span class="tick">GitHub</span>
+    <span class="tick">AI Tools</span>
+  </div>
+</div>
 
-// ── TIMELINE ITEMS ──
-const tlItems = document.querySelectorAll('.tl-item');
-const tlio = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('on'), 0);
-    }
-  });
-}, { threshold: 0.15 });
-tlItems.forEach(el => tlio.observe(el));
+<!-- ════ SKILLS ════ -->
+<section id="skills" class="sec" style="background:var(--navy2);padding:120px 56px;">
+  <div class="sec-inner">
+    <div class="skills-header reveal">
+      <div>
+        <div class="sec-tag">What I bring</div>
+        <h2 class="sec-h2">MY <span class="y">SKILLS</span></h2>
+      </div>
+      <p class="skills-note">A mix of design sense and development depth — built through real projects and internship experience.</p>
+    </div>
+    <div class="skills-grid reveal reveal-d2">
+      <div class="sk-card" data-num="01">
+        <div class="sk-icon">🌐</div>
+        <div class="sk-name">WEB DEV</div>
+        <div class="sk-items">
+          <span>HTML</span><span>CSS</span><span>JavaScript</span>
+          <span>PHP</span><span>React.js</span><span>WordPress</span>
+        </div>
+      </div>
+      <div class="sk-card" data-num="02">
+        <div class="sk-icon">🎨</div>
+        <div class="sk-name">DESIGN</div>
+        <div class="sk-items">
+          <span>Figma</span><span>UI/UX</span>
+          <span>Prototyping</span><span>Responsive</span>
+        </div>
+      </div>
+      <div class="sk-card" data-num="03">
+        <div class="sk-icon">🗄️</div>
+        <div class="sk-name">BACKEND</div>
+        <div class="sk-items">
+          <span>Java</span><span>MySQL</span>
+          <span>PHP</span><span>SQL</span>
+        </div>
+      </div>
+      <div class="sk-card" data-num="04">
+        <div class="sk-icon">🛠️</div>
+        <div class="sk-name">TOOLS</div>
+        <div class="sk-items">
+          <span>GitHub</span><span>VS Code</span>
+          <span>AI Tools</span>
+        </div>
+      </div>
+      <div class="sk-card" data-num="05">
+        <div class="sk-icon">🧩</div>
+        <div class="sk-name">EXTENSION DEV</div>
+        <div class="sk-items">
+          <span>Browser APIs</span><span>Manifest v3</span>
+          <span>Content Scripts</span>
+        </div>
+      </div>
+      <div class="sk-card" data-num="06">
+        <div class="sk-icon">🤖</div>
+        <div class="sk-name">AI WORKFLOW</div>
+        <div class="sk-items">
+          <span>AI Tools</span><span>Problem Solving</span>
+          <span>Self-Learning</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-// ── SKILL BARS ──
-const sbars = document.querySelectorAll('.sbar-item');
-const sbio = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
-}, { threshold: 0.3 });
-sbars.forEach(el => sbio.observe(el));
+<!-- ════ 3D SECTION ════ -->
+<section id="threed">
+  <div class="threed-inner">
+    <div class="threed-left reveal">
+      <div class="sec-tag">Dimension</div>
+      <div class="threed-title">WHERE<br><span style="color:var(--yellow)">DESIGN</span><br>MEETS CODE</div>
+      <p class="threed-body">
+        I don't just pick a side — I live in both worlds. A project isn't done until it looks right AND works right. Every pixel is a decision. Every line of code is intentional.
+        <br><br>
+        Currently a 2nd year CS student at SZABIST — but I've already shipped a live browser extension, designed a full LMS in Figma, and built a dual-role eCommerce system from scratch.
+      </p>
+      <div class="stat-row">
+        <div class="mini-stat">
+          <div class="mini-stat-n">2026</div>
+          <div class="mini-stat-l">Graduating</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-n">5+</div>
+          <div class="mini-stat-l">Projects</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-n">3</div>
+          <div class="mini-stat-l">Certs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="threed-right reveal reveal-d2">
+      <div class="float-cards">
+        <div class="fc">HTML / CSS</div>
+        <div class="fc">React.js ⚛</div>
+        <div class="fc">Figma 🎨</div>
+        <div class="fc">WordPress</div>
+      </div>
+      <div class="scene">
+        <div class="cube">
+          <div class="face face-front">DESIGN</div>
+          <div class="face face-back">BUILD</div>
+          <div class="face face-left">CODE</div>
+          <div class="face face-right">SHIP</div>
+          <div class="face face-top">LEARN</div>
+          <div class="face face-bottom">GROW</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ STORY — TIMELINE ════ -->
+<section id="story">
+  <div class="sec-inner">
+    <div class="story-header reveal">
+      <div class="sec-tag">My journey</div>
+      <h2 class="sec-h2">THE <span class="y">STORY</span></h2>
+      <p class="story-subtitle">From matric to internships to shipping live products — this is how I got here.</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot-col"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-year">MAY 2020 — MAY 2022</div>
+          <div class="tl-title">THE BEGINNING</div>
+          <div class="tl-org">Arqam Public School · Matric — Computer Science</div>
+          <div class="tl-desc">Where it all started. Chose Computer Science as my matric subject and realized this was the path I wanted. First real exposure to logical thinking and technology.</div>
+          <div class="tl-tags"><span class="tl-tag">Computer Science</span><span class="tl-tag">Matric</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot-col"><div class="tl-dot cyan-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-year">JUNE 2022 — JULY 2024</div>
+          <div class="tl-title">GOING DEEPER</div>
+          <div class="tl-org">Govt. Degree College, Majeed SRE III · Intermediate — Pre-Engineering</div>
+          <div class="tl-desc">Pre-Engineering pushed my problem-solving skills. Started teaching myself web basics on the side — HTML, CSS, the fundamentals that would later become my craft.</div>
+          <div class="tl-tags"><span class="tl-tag">Pre-Engineering</span><span class="tl-tag">Self-Learning</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot-col"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-year">2024 — PRESENT</div>
+          <div class="tl-title">SZABIST ERA</div>
+          <div class="tl-org">SZABIST University, Karachi · BSCS 2024–2028</div>
+          <div class="tl-desc">Started my Bachelor's in Computer Science. University gave structure — but projects gave me growth. Studying OOP, Databases, Web Dev, and UI/UX while building real things on the side.</div>
+          <div class="tl-tags"><span class="tl-tag">BSCS</span><span class="tl-tag">Web Dev</span><span class="tl-tag">UI/UX</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot-col"><div class="tl-dot cyan-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-year">2025</div>
+          <div class="tl-title">REAL WORLD HIT</div>
+          <div class="tl-org">Sysartx · WordPress Developer Intern</div>
+          <div class="tl-desc">My first professional experience. Designed and developed WordPress sites with real clients and real deadlines. Applied HTML, CSS, JS, and PHP in production. Learned what it means to communicate with a team under pressure and deliver anyway.</div>
+          <div class="tl-tags"><span class="tl-tag">WordPress</span><span class="tl-tag">PHP</span><span class="tl-tag">JavaScript</span><span class="tl-tag">Team Work</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot-col"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-year">FEB — NOW 2026</div>
+          <div class="tl-title">FORMAI — SHIPPED</div>
+          <div class="tl-org">Personal Project · Live at formai.infinityfree.me</div>
+          <div class="tl-desc">Built a browser extension that auto-fills long online forms. Iterated through 3 versions. It's live. Users are using it. A new version is in development. This is the moment I stopped just learning and started shipping.</div>
+          <div class="tl-tags"><span class="tl-tag">Extension Dev</span><span class="tl-tag">Live Product</span><span class="tl-tag">v4 Coming</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ PROJECTS ════ -->
+<section id="projects">
+  <div class="sec-inner">
+    <div class="proj-header reveal">
+      <div>
+        <div class="sec-tag">Selected Work</div>
+        <h2 class="sec-h2">MY <span class="y">PROJECTS</span></h2>
+      </div>
+      <div class="proj-count">05</div>
+    </div>
+
+    <div class="proj-grid">
+
+      <!-- FEATURED -->
+      <div class="proj-card big reveal">
+        <div class="proj-visual pv1">
+          <div class="proj-bg-text">FORMAI</div>
+          <div class="proj-overlay">
+            <a href="https://formai.infinityfree.me/" target="_blank" class="proj-link pl-y">Live Site ↗</a>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-info-top">
+            <div class="proj-name">ForMai — Browser Extension</div>
+            <div class="proj-yr">2026</div>
+          </div>
+          <div class="proj-type">Extension Development · 3 Versions Shipped · Live</div>
+          <div class="proj-desc">Auto-fills long online forms for users. Built, broken, rebuilt and refined through 3 versions. Currently live. Version 4 dropping May 2026.</div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-d2">
+        <div class="proj-visual pv2">
+          <div class="proj-bg-text">LMS</div>
+          <div class="proj-overlay">
+            <a href="https://www.figma.com/design/CVruA45mTKAV1MM9X0K6KP/SZABIST-Project?node-id=0-1" target="_blank" class="proj-link pl-y">View Design ↗</a>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-info-top">
+            <div class="proj-name">SZABIST Student LMS</div>
+            <div class="proj-yr">2025</div>
+          </div>
+          <div class="proj-type">UI/UX Design · Figma</div>
+          <div class="proj-desc">Full Learning Management System designed for SZABIST students. Clean navigation, intuitive flows — made for daily academic use.</div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-d3">
+        <div class="proj-visual pv3">
+          <div class="proj-bg-text">TOEX</div>
+          <div class="proj-overlay">
+            <div class="proj-link pl-c" style="cursor:default">Personal Project</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-info-top">
+            <div class="proj-name">ToeXhek</div>
+            <div class="proj-yr">2025</div>
+          </div>
+          <div class="proj-type">Game Development · Logic & Algorithms</div>
+          <div class="proj-desc">The app predicts your 4-digit number. Built to sharpen algorithmic thinking in a way that's actually fun to test.</div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-d2">
+        <div class="proj-visual pv4">
+          <div class="proj-bg-text">ASM</div>
+          <div class="proj-overlay">
+            <div class="proj-link pl-c" style="cursor:default">Personal Project</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-info-top">
+            <div class="proj-name">Compact Assembly Toolkit</div>
+            <div class="proj-yr">2025</div>
+          </div>
+          <div class="proj-type">Desktop App · Multi-tool</div>
+          <div class="proj-desc">Keyboard simulator, calculator, and a visual guide to how computers process input — all in one compact app.</div>
+        </div>
+      </div>
+
+      <div class="proj-card big reveal">
+        <div class="proj-visual pv5">
+          <div class="proj-bg-text">ECOM</div>
+          <div class="proj-overlay">
+            <div class="proj-link pl-y" style="cursor:default">First Major Build</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-info-top">
+            <div class="proj-name">eCommerce Store</div>
+            <div class="proj-yr">2024</div>
+          </div>
+          <div class="proj-type">Full-Stack · Java & MySQL · Admin + Customer Roles</div>
+          <div class="proj-desc">My first independently built project from scratch. Dual-role eCommerce system — full Admin panel and Customer interface. Built entirely with Java and MySQL. This is where I learned what "shipping a product" actually feels like.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ ABOUT ════ -->
+<section id="about">
+  <div class="sec-inner">
+    <div class="about-wrap">
+      <div class="about-left reveal">
+        <div class="sec-tag">Who I am</div>
+        <h2 class="sec-h2" style="margin-bottom:32px;">ABOUT <span class="y">ME</span></h2>
+
+        <div class="about-quote-block">
+          <div class="about-quote">"I don't just build websites — I build things people actually use."</div>
+          <div class="about-quote-attr">— Muhammad Ahmed</div>
+        </div>
+
+        <p class="about-body">
+          CS undergraduate at SZABIST University, Karachi. WordPress Developer intern at Sysartx. Builder of ForMai — a browser extension that's live right now with real users.<br><br>
+          I sit at the intersection of design and development. I care about how things look and how they work. I learn fast, ship often, and improve with every version.
+        </p>
+
+        <div class="cert-list">
+          <div class="cert-item"><span class="cert-icon">★</span> AI for Beginners — HP LIFE</div>
+          <div class="cert-item"><span class="cert-icon">★</span> HackerRank Certificate — freeCodeCamp</div>
+          <div class="cert-item"><span class="cert-icon">★</span> What is Artificial Intelligence? — IBM SkillBuild</div>
+        </div>
+      </div>
+
+      <div class="about-right reveal reveal-d2">
+        <div class="sec-tag">Skill levels</div>
+        <div class="skill-bars">
+          <div class="sbar-item">
+            <div class="sbar-top"><span class="sbar-name">WEB DESIGN</span><span class="sbar-pct">85%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:85%"></div></div>
+          </div>
+          <div class="sbar-item">
+            <div class="sbar-top"><span class="sbar-name">HTML / CSS</span><span class="sbar-pct">88%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:88%"></div></div>
+          </div>
+          <div class="sbar-item">
+            <div class="sbar-top"><span class="sbar-name">JAVASCRIPT</span><span class="sbar-pct">72%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:72%"></div></div>
+          </div>
+          <div class="sbar-item">
+            <div class="sbar-top"><span class="sbar-name">FIGMA</span><span class="sbar-pct">80%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:80%"></div></div>
+          </div>
+          <div class="sbar-item">
+            <div class="sbar-top"><span class="sbar-name">WORDPRESS</span><span class="sbar-pct">78%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:78%"></div></div>
+          </div>
+          <div class="sbar-item">
+            <div class="sbar-top"><span class="sbar-name">REACT.JS</span><span class="sbar-pct">60%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:60%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CONTACT ════ -->
+<section id="contact">
+  <div class="contact-ghost">HIRE ME</div>
+  <div class="contact-inner reveal">
+    <div class="sec-tag" style="justify-content:center;margin-bottom:20px;">Let's work together</div>
+    <div class="contact-h">
+      GOT A<br><span class="y">PROJECT</span><br><span class="c">?</span>
+    </div>
+    <p class="contact-sub">I'm open to freelance work, internships, and full-time roles. If you have something to build — let's talk.</p>
+    <a href="mailto:muhammzd.ahmed.mh@gmail.com" class="contact-email">muhammzd.ahmed.mh@gmail.com</a>
+    <div class="contact-socials">
+      <a href="mailto:muhammzd.ahmed.mh@gmail.com" class="soc-btn">Email</a>
+      <a href="https://linkedin.com/in/Muhammad-ahm" target="_blank" class="soc-btn">LinkedIn</a>
+      <a href="https://github.com/muhammad-ahm" target="_blank" class="soc-btn">GitHub</a>
+      <a href="https://formai.infinityfree.me" target="_blank" class="soc-btn">ForMai ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">MA<span>.</span></div>
+  <div class="foot-copy">© 2026 Muhammad Ahmed — All rights reserved</div>
+  <div class="foot-loc">Karachi, Pakistan</div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

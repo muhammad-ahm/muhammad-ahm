@@ -1,0 +1,1419 @@
+.MODEL SMALL
+.STACK 100h
+
+.DATA
+msg_welcome DB 0Dh, 0Ah
+DB 'COMBINED ASSEMBLY MODULES SYSTEM', 0Dh, 0Ah, '$'
+msg_main_menu DB 0Dh, 0Ah
+DB 'SELECT MODULE:', 0Dh, 0Ah
+DB '[1] Smart Calculator', 0Dh, 0Ah
+DB '[2] Keyboard Input Demonstration', 0Dh, 0Ah
+DB '[3] Graphic Effects Renderer', 0Dh, 0Ah
+DB '[0] Exit Program', 0Dh, 0Ah
+DB 0Dh, 0Ah, 'Enter your choice (0-3): $'
+msg_invalid DB 0Dh, 0Ah
+DB 'ERROR: Invalid selection! Please enter 0-3.', 0Dh, 0Ah, '$'
+msg_goodbye DB 0Dh, 0Ah
+DB 'Thank you for using Combined Modules!', 0Dh, 0Ah
+DB 0Dh, 0Ah, '$'
+user_choice DB ?
+VGA_SEGMENT EQU 0A000h
+VIDEO_INT EQU 10h
+DOS_INT EQU 21h
+KEYBOARD_INT EQU 16h
+MODE_TEXT_80x25 EQU 03h
+MODE_VGA_13h EQU 13h
+SCREEN_WIDTH EQU 320
+SCREEN_HEIGHT EQU 200
+CANVAS_WIDTH EQU 160
+CANVAS_HEIGHT EQU 100
+CANVAS_START_X EQU 80
+CANVAS_START_Y EQU 50
+BIOS_SET_MODE EQU 00h
+BIOS_GET_MODE EQU 0Fh
+DOS_PRINT_STRING EQU 09h
+DOS_READ_CHAR EQU 01h
+DOS_TERMINATE EQU 4Ch
+EFFECT_HORIZONTAL EQU 1
+EFFECT_PLASMA EQU 2
+original_video_mode DB ?
+selected_effect DB ?
+user_choice_effect DB ?
+msg_banner DB 0Dh, 0Ah
+DB 'VGA GRAPHICS RENDERER v3.0', 0Dh, 0Ah
+DB 'Two Effect Display System', 0Dh, 0Ah
+DB 0Dh, 0Ah, '$'
+msg_menu_vga DB 0Dh, 0Ah
+DB 'SELECT GRAPHICS EFFECT:', 0Dh, 0Ah
+DB '[1] Horizontal Gradient', 0Dh, 0Ah
+DB '[2] Plasma Effect', 0Dh, 0Ah
+DB '[0] Back to Main Menu', 0Dh, 0Ah
+DB 0Dh, 0Ah, '$'
+msg_prompt_vga DB 'Enter your choice (0-2): $'
+msg_rendering DB 0Dh, 0Ah, 'Rendering effect...', 0Dh, 0Ah, '$'
+msg_complete DB 0Dh, 0Ah, 'Effect displayed!', 0Dh, 0Ah, '$'
+msg_invalid_vga DB 0Dh, 0Ah
+DB 'ERROR: Invalid selection! Please enter 0-2.', 0Dh, 0Ah, '$'
+msg_press_key_vga DB 0Dh, 0Ah, 'Press any key to continue...', '$'
+msg_title      DB 13,10,"KEYBOARD INPUT DEMONSTRATION",13,10,"$"
+msg_press_key  DB 13,10,"Press any key (ESC to show summary)...",13,10,"$"
+msg_key        DB "You pressed: ","$"
+pressed_key    DB "?", "$"
+RawASCII       DB '?'
+msg_ascii      DB "ASCII    : $"
+msg_scan       DB "SCAN     : $"
+msg_binary     DB "Binary   : $"
+msg_type       DB "Type     : $"
+msg_category   DB "Category : $"
+type_alpha     DB "Alphabet","$"
+type_digit     DB "Digit","$"
+type_special   DB "Special Character","$"
+cat_printable  DB "Printable Character","$"
+cat_space      DB "Space Key","$"
+cat_enter      DB "Enter Key","$"
+cat_backspace  DB "Backspace","$"
+cat_tab        DB "Tab Key","$"
+cat_arrow      DB "Arrow Key","$"
+cat_function   DB "Function Key","$"
+cat_other      DB "Other Special Key","$"
+msg_history    DB 13,10,"History:",13,10,"$"
+msg_last       DB " Last Key   : ","$"
+msg_prev       DB " Previous   : ","$"
+msg_summary    DB 13,10,"5-Key Buffer Summary",13,10,"$"
+msg_exit_kb    DB 13,10,"Exiting keyboard module...returning to main menu",13,10,"$"
+newline        DB 13,10,"$"
+ascii_buffer   DB "00h","$"
+scan_buffer    DB "00h","$"
+bin_buffer     DB "00000000","$"
+hex_digits     DB "0123456789ABCDEF"
+KeyCount       DB 0
+KeyASCII       DB 5 DUP(?)
+KeySCAN        DB 5 DUP(?)
+LastKey        DB '?'
+PrevKey        DB '?'
+PI_VAL EQU 314159
+EULER_VAL EQU 271828
+G_RATIO_VAL EQU 161803
+C_L_VAL EQU 299792458
+F_C_VAL EQU 466920
+EULER_MC_VAL EQU 57721
+PYTH_C_VAL EQU 141421
+FSC_VAL EQU 729
+num1 DW ?
+num2 DW ?
+result DW ?
+operation DB ?
+main_choice DB ?
+constant_choice DB ?
+buffer1 DB 20, ?, 20 DUP(?)
+buffer2 DB 20, ?, 20 DUP(?)
+crlf DB 0dh, 0ah, '$'
+msg_main_calc DB 0dh, 0ah, '  CALCULATOR MENU  ', 0dh, 0ah
+DB '1. Perform Operation', 0dh, 0ah
+DB '2. View Constants', 0dh, 0ah
+DB '0. Back to Main Menu', 0dh, 0ah
+DB 'Enter your choice (0-2): $'
+msg1 DB 0dh, 0ah, 'Enter first number: $'
+msg2 DB 0dh, 0ah, 'Enter second number: $'
+msg_op DB 0dh, 0ah, 'Select operation:', 0dh, 0ah
+DB '+ (Plus)', 0dh, 0ah
+DB '- (Minus)', 0dh, 0ah
+DB 'x (Multiply)', 0dh, 0ah
+DB '/ (Divide)', 0dh, 0ah
+DB '% (Modulus)', 0dh, 0ah
+DB '^ (Power)', 0dh, 0ah
+DB 'Enter your choice: $'
+msg_constant DB 0dh, 0ah, 'Select Constant:', 0dh, 0ah
+DB '1. Pi Constant', 0dh, 0ah
+DB '2. Eulers Theorem', 0dh, 0ah
+DB '3. Golden Ratio', 0dh, 0ah
+DB '4. Speed of Light in Vacuum', 0dh, 0ah
+DB '5. Feigenbaum Constant', 0dh, 0ah
+DB '6. Euler-Mascheroni Constant', 0dh, 0ah
+DB '7. Pythagoras Constant', 0dh, 0ah
+DB '8. Fine-Structure Constant', 0dh, 0ah
+DB 'Enter choice (1-8): $'
+msg_result DB 0dh, 0ah, 'Result: $'
+msg_invalid_calc DB 0dh, 0ah, 'Invalid operation!$'
+msg_div_zero DB 0dh, 0ah, 'Error: Division by zero!$'
+msg_const_val DB 0dh, 0ah, 'Constant value: $'
+msg_another DB 0dh, 0ah, 'Perform another operation with this result? (Y/N): $'
+msg_new_calc DB 0dh, 0ah, 'Start new calculation with this result? (Y/N): $'
+msg_exit_calc DB 0dh, 0ah, 'Exiting calculator...returning to main menu', 0dh, 0ah, '$'
+name_pi DB '3.14159$'
+name_euler DB '2.71828$'
+name_golden DB '1.61803$'
+name_light DB '299792458$'
+name_feigen DB '4.66920$'
+name_euler_m DB '0.577215$'
+name_pyth DB '1.414213$'
+name_fsc DB '0.007297$'
+
+.CODE
+MAIN PROC
+MOV AX, @DATA
+MOV DS, AX
+MOV ES, AX
+
+CALL DISPLAY_WELCOME
+
+MAIN_LOOP:
+CALL DISPLAY_MAIN_MENU
+CALL GET_MAIN_CHOICE
+
+CMP user_choice, '0'
+JE EXIT_MAIN_PROGRAM
+
+CMP user_choice, '1'
+JE LAUNCH_CALCULATOR_MODULE
+
+CMP user_choice, '2'
+JE LAUNCH_KEYBOARD_MODULE
+
+CMP user_choice, '3'
+JE LAUNCH_VGA_MODULE
+
+MOV DX, OFFSET msg_invalid
+MOV AH, 09h
+INT 21h
+
+JMP MAIN_LOOP
+
+LAUNCH_CALCULATOR_MODULE:
+CALL CALCULATOR_MAIN
+JMP MAIN_LOOP
+
+LAUNCH_KEYBOARD_MODULE:
+CALL KEYBOARD_INPUT_MAIN
+JMP MAIN_LOOP
+
+LAUNCH_VGA_MODULE:
+CALL VGA_GRAPHICS_MAIN
+JMP MAIN_LOOP
+
+EXIT_MAIN_PROGRAM:
+MOV DX, OFFSET msg_goodbye
+MOV AH, 09h
+INT 21h
+
+MOV AH, 4Ch
+MOV AL, 0
+INT 21h
+
+MAIN ENDP
+
+DISPLAY_WELCOME PROC
+PUSH AX
+PUSH DX
+
+MOV DX, OFFSET msg_welcome
+MOV AH, 09h
+INT 21h
+
+POP DX
+POP AX
+RET
+DISPLAY_WELCOME ENDP
+
+DISPLAY_MAIN_MENU PROC
+PUSH AX
+PUSH DX
+
+MOV DX, OFFSET msg_main_menu
+MOV AH, 09h
+INT 21h
+
+POP DX
+POP AX
+RET
+DISPLAY_MAIN_MENU ENDP
+
+GET_MAIN_CHOICE PROC
+PUSH AX
+
+MOV AH, 01h
+INT 21h
+MOV user_choice, AL
+
+POP AX
+RET
+GET_MAIN_CHOICE ENDP
+
+CALCULATOR_MAIN PROC
+MOV AX, @data
+MOV DS, AX
+
+calculator_menu_loop:
+MOV DX, OFFSET msg_main_calc
+MOV AH, 09h
+INT 21h
+
+MOV AH, 01h
+INT 21h
+MOV main_choice, AL
+
+CMP AL, '0'
+JE calc_exit_proc
+CMP AL, '1'
+JE calc_operations_mode
+CMP AL, '2'
+JE calc_constants_mode
+
+MOV DX, OFFSET msg_invalid_calc
+MOV AH, 09h
+INT 21h
+JMP calculator_menu_loop
+
+calc_operations_mode:
+MOV DX, OFFSET msg1
+MOV AH, 09h
+INT 21h
+MOV DX, OFFSET buffer1
+MOV AH, 0Ah
+INT 21h
+CALL str_to_int
+MOV num1, AX
+
+calc_operations_loop:
+MOV DX, OFFSET msg2
+MOV AH, 09h
+INT 21h
+MOV DX, OFFSET buffer2
+MOV AH, 0Ah
+INT 21h
+CALL str_to_int2
+MOV num2, AX
+
+MOV DX, OFFSET msg_op
+MOV AH, 09h
+INT 21h
+MOV AH, 01h
+INT 21h
+MOV operation, AL
+
+MOV AH, 0Dh
+INT 21h
+
+MOV DX, OFFSET msg_result
+MOV AH, 09h
+INT 21h
+
+MOV AL, operation
+CMP AL, '+'
+JE calc_do_plus
+CMP AL, '-'
+JE calc_do_minus
+CMP AL, 'x'
+JE calc_do_mult
+CMP AL, 'X'
+JE calc_do_mult
+CMP AL, '/'
+JE calc_do_div
+CMP AL, '%'
+JE calc_do_mod
+CMP AL, '^'
+JE calc_do_pow
+
+MOV DX, OFFSET msg_invalid_calc
+MOV AH, 09h
+INT 21h
+JMP calc_continue_operations
+
+calc_constants_mode:
+calc_constants_loop:
+MOV DX, OFFSET msg_constant
+MOV AH, 09h
+INT 21h
+
+MOV AH, 01h
+INT 21h
+MOV constant_choice, AL
+
+MOV DX, OFFSET msg_const_val
+MOV AH, 09h
+INT 21h
+
+MOV AL, constant_choice
+CMP AL, '1'
+JE calc_const_pi
+CMP AL, '2'
+JE calc_const_euler
+CMP AL, '3'
+JE calc_const_golden
+CMP AL, '4'
+JE calc_const_light
+CMP AL, '5'
+JE calc_const_feigen
+CMP AL, '6'
+JE calc_const_euler_m
+CMP AL, '7'
+JE calc_const_pyth
+CMP AL, '8'
+JE calc_const_fsc
+
+MOV DX, OFFSET msg_invalid_calc
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_continue_constants:
+MOV DX, OFFSET msg_another
+MOV AH, 09h
+INT 21h
+MOV AH, 01h
+INT 21h
+CMP AL, 'y'
+JE calc_constants_loop
+CMP AL, 'Y'
+JE calc_constants_loop
+JMP calculator_menu_loop
+
+calc_do_plus:
+MOV AX, num1
+ADD AX, num2
+MOV result, AX
+CALL print_int
+JMP calc_continue_operations
+
+calc_do_minus:
+MOV AX, num1
+SUB AX, num2
+MOV result, AX
+CALL print_int
+JMP calc_continue_operations
+
+calc_do_mult:
+MOV AX, num1
+IMUL num2
+MOV result, AX
+CALL print_int
+JMP calc_continue_operations
+
+calc_do_div:
+MOV BX, num2
+CMP BX, 0
+JNE calc_div_safe
+MOV DX, OFFSET msg_div_zero
+MOV AH, 09h
+INT 21h
+JMP calc_continue_operations
+calc_div_safe:
+MOV AX, num1
+CWD
+IDIV num2
+MOV result, AX
+CALL print_int
+JMP calc_continue_operations
+
+calc_do_mod:
+MOV BX, num2
+CMP BX, 0
+JNE calc_mod_safe
+MOV DX, OFFSET msg_div_zero
+MOV AH, 09h
+INT 21h
+JMP calc_continue_operations
+calc_mod_safe:
+MOV AX, num1
+CWD
+IDIV num2
+MOV AX, DX
+MOV result, AX
+CALL print_int
+JMP calc_continue_operations
+
+calc_do_pow:
+MOV CX, num2
+CMP CX, 0
+JL calc_pow_done
+JE calc_pow_zero
+
+MOV AX, 1
+MOV BX, num1
+calc_pow_loop:
+IMUL BX
+LOOP calc_pow_loop
+JMP calc_pow_print
+
+calc_pow_zero:
+MOV AX, 1
+JMP calc_pow_print
+
+calc_pow_done:
+MOV AX, 0
+
+calc_pow_print:
+MOV result, AX
+CALL print_int
+JMP calc_continue_operations
+
+calc_continue_operations:
+MOV DX, OFFSET msg_new_calc
+MOV AH, 09h
+INT 21h
+MOV AH, 01h
+INT 21h
+CMP AL, 'y'
+JE calc_use_result_as_first
+CMP AL, 'Y'
+JE calc_use_result_as_first
+JMP calculator_menu_loop
+
+calc_use_result_as_first:
+MOV AX, result
+MOV num1, AX
+JMP calc_operations_loop
+
+calc_const_pi:
+MOV DX, OFFSET name_pi
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_euler:
+MOV DX, OFFSET name_euler
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_golden:
+MOV DX, OFFSET name_golden
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_light:
+MOV DX, OFFSET name_light
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_feigen:
+MOV DX, OFFSET name_feigen
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_euler_m:
+MOV DX, OFFSET name_euler_m
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_pyth:
+MOV DX, OFFSET name_pyth
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_const_fsc:
+MOV DX, OFFSET name_fsc
+MOV AH, 09h
+INT 21h
+JMP calc_continue_constants
+
+calc_exit_proc:
+MOV DX, OFFSET msg_exit_calc
+MOV AH, 09h
+INT 21h
+RET
+
+CALCULATOR_MAIN ENDP
+
+print_int PROC
+PUSH AX
+PUSH BX
+PUSH CX
+PUSH DX
+
+TEST AX, AX
+JNS calc_positive
+PUSH AX
+MOV DL, '-'
+MOV AH, 2
+INT 21h
+POP AX
+NEG AX
+
+calc_positive:
+MOV CX, 0
+MOV BX, 10
+
+CMP AX, 0
+JNE calc_convert_loop
+PUSH AX
+INC CX
+JMP calc_print_digits
+
+calc_convert_loop:
+CMP AX, 0
+JE calc_print_digits
+XOR DX, DX
+DIV BX
+PUSH DX
+INC CX
+JMP calc_convert_loop
+
+calc_print_digits:
+POP DX
+ADD DL, '0'
+MOV AH, 2
+INT 21h
+LOOP calc_print_digits
+
+POP DX
+POP CX
+POP BX
+POP AX
+RET
+print_int ENDP
+
+str_to_int PROC
+PUSH BX
+PUSH CX
+PUSH DX
+PUSH SI
+
+MOV SI, OFFSET buffer1 + 2
+MOV CL, [buffer1 + 1]
+MOV CH, 0
+
+MOV BX, 1
+MOV AL, [SI]
+CMP AL, '-'
+JNE calc_parse_number
+MOV BX, -1
+INC SI
+DEC CX
+
+calc_parse_number:
+MOV AX, 0
+
+calc_parse_loop:
+CMP CX, 0
+JE calc_parse_done
+
+PUSH BX
+MOV BL, [SI]
+SUB BL, '0'
+MOV BH, 0
+
+PUSH BX
+MOV BX, 10
+MUL BX
+POP BX
+ADD AX, BX
+POP BX
+
+INC SI
+DEC CX
+JMP calc_parse_loop
+
+calc_parse_done:
+CMP BX, 1
+JE calc_no_negate
+NEG AX
+
+calc_no_negate:
+POP SI
+POP DX
+POP CX
+POP BX
+RET
+str_to_int ENDP
+
+str_to_int2 PROC
+PUSH BX
+PUSH CX
+PUSH DX
+PUSH SI
+
+MOV SI, OFFSET buffer2 + 2
+MOV CL, [buffer2 + 1]
+MOV CH, 0
+
+MOV BX, 1
+MOV AL, [SI]
+CMP AL, '-'
+JNE calc_parse_number2
+MOV BX, -1
+INC SI
+DEC CX
+
+calc_parse_number2:
+MOV AX, 0
+
+calc_parse_loop2:
+CMP CX, 0
+JE calc_parse_done2
+
+PUSH BX
+MOV BL, [SI]
+SUB BL, '0'
+MOV BH, 0
+
+PUSH BX
+MOV BX, 10
+MUL BX
+POP BX
+ADD AX, BX
+POP BX
+
+INC SI
+DEC CX
+JMP calc_parse_loop2
+
+calc_parse_done2:
+CMP BX, 1
+JE calc_no_negate2
+NEG AX
+
+calc_no_negate2:
+POP SI
+POP DX
+POP CX
+POP BX
+RET
+str_to_int2 ENDP
+
+KEYBOARD_INPUT_MAIN PROC
+MOV AH,0
+MOV AL,3
+INT 10h
+
+MOV DX,OFFSET msg_title
+MOV AH,09h
+INT 21h
+
+keyboard_main_loop:
+MOV DX, OFFSET msg_press_key
+MOV AH,09h
+INT 21h
+
+MOV AH,00h
+INT 16h
+
+MOV BL, AL
+MOV BH, AH
+MOV RawASCII, AL
+
+CMP BL,1Bh
+JE show_keyboard_summary
+
+MOV AL,KeyCount
+CMP AL,5
+JAE keyboard_skip_store
+
+XOR AH,AH
+MOV SI,AX
+MOV DI,OFFSET KeyASCII
+ADD DI,SI
+MOV [DI],BL
+
+MOV DI,OFFSET KeySCAN
+ADD DI,SI
+MOV [DI],BH
+
+INC KeyCount
+
+keyboard_skip_store:
+
+MOV AL,LastKey
+MOV PrevKey,AL
+
+MOV AL,BL
+CMP AL,20h
+JB keyboard_map_special
+CMP AL,7Eh
+JA keyboard_map_special
+
+MOV LastKey,AL
+JMP keyboard_show_info
+
+keyboard_map_special:
+CMP BL,20h
+JE keyboard_space_key
+CMP BL,0Dh
+JE keyboard_enter_key
+CMP BL,09h
+JE keyboard_tab_key
+CMP BL,08h
+JE keyboard_backsp_key
+
+MOV AL,BH
+CMP AL,48h
+JE keyboard_up
+CMP AL,50h
+JE keyboard_down
+CMP AL,4Bh
+JE keyboard_left
+CMP AL,4Dh
+JE keyboard_right
+
+CMP AL,3Bh
+JB keyboard_other_key
+CMP AL,44h
+JBE keyboard_fn_key
+
+keyboard_other_key:
+MOV LastKey,'?'
+JMP keyboard_show_info
+
+keyboard_space_key:
+MOV LastKey, '_'
+JMP keyboard_show_info
+
+keyboard_enter_key:
+MOV LastKey, ' '
+JMP keyboard_show_info
+
+keyboard_tab_key:
+MOV LastKey,' '
+JMP keyboard_show_info
+
+keyboard_backsp_key:
+MOV LastKey, ' '
+JMP keyboard_show_info
+
+keyboard_up:
+MOV LastKey, '^'
+JMP keyboard_show_info
+
+keyboard_down:
+MOV LastKey, 'v'
+JMP keyboard_show_info
+
+keyboard_left:
+MOV LastKey, '<'
+JMP keyboard_show_info
+
+keyboard_right:
+MOV LastKey, '>'
+JMP keyboard_show_info
+
+keyboard_fn_key:
+MOV LastKey, 'F'
+JMP keyboard_show_info
+
+keyboard_show_info:
+MOV DX,OFFSET msg_key
+MOV AH,09h
+INT 21h
+
+MOV AL, LastKey
+MOV pressed_key, AL
+MOV pressed_key+1,'$'
+
+MOV DX,OFFSET pressed_key
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV AL,BL
+CALL ConvertASCII
+MOV DX,OFFSET msg_ascii
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET ascii_buffer
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV AL,BH
+CALL ConvertSCAN
+MOV DX,OFFSET msg_scan
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET scan_buffer
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV AL,RawASCII
+CALL ConvertBinary
+MOV DX,OFFSET msg_binary
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET bin_buffer
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET msg_type
+MOV AH,09h
+INT 21h
+
+MOV AL, RawASCII
+CMP AL,'A'
+JB keyboard_digit_type
+CMP AL,'Z'
+JBE keyboard_alpha_type
+CMP AL,'a'
+JB keyboard_digit_type
+CMP AL,'z'
+JBE keyboard_alpha_type
+
+keyboard_digit_type:
+CMP AL,'0'
+JB keyboard_special_type
+CMP AL,'9'
+JBE keyboard_is_digit
+keyboard_special_type:
+MOV DX,OFFSET type_special
+JMP keyboard_type_out
+keyboard_alpha_type:
+MOV DX,OFFSET type_alpha
+JMP keyboard_type_out
+keyboard_is_digit:
+MOV DX,OFFSET type_digit
+
+keyboard_type_out:
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET msg_category
+MOV AH,09h
+INT 21h
+
+MOV AL, RawASCII
+MOV DL,BH
+
+CMP AL,20h
+JE keyboard_cat_space_key
+CMP AL,0Dh
+JE keyboard_cat_enter_key
+CMP AL,08h
+JE keyboard_cat_backsp_key
+CMP AL,09h
+JE keyboard_cat_tab_key
+
+CMP AL,00h
+JNE keyboard_cat_print
+CMP DL,3Bh
+JB keyboard_cat_arrow_check
+CMP DL,44h
+JBE keyboard_cat_fn_key
+
+keyboard_cat_arrow_check:
+CMP DL,48h
+JE keyboard_cat_arrow_key
+CMP DL,50h
+JE keyboard_cat_arrow_key
+CMP DL,4Bh
+JE keyboard_cat_arrow_key
+CMP DL,4Dh
+JE keyboard_cat_arrow_key
+JMP keyboard_cat_other_key
+
+keyboard_cat_print:
+CMP AL,20h
+JB keyboard_cat_other_key
+CMP AL,7Eh
+JA keyboard_cat_other_key
+MOV DX,OFFSET cat_printable
+JMP keyboard_cat_done
+
+keyboard_cat_space_key:
+MOV DX, OFFSET cat_space
+JMP keyboard_cat_done
+
+keyboard_cat_enter_key:
+MOV DX, OFFSET cat_enter
+JMP keyboard_cat_done
+
+keyboard_cat_backsp_key:
+MOV DX, OFFSET cat_backspace
+JMP keyboard_cat_done
+
+keyboard_cat_tab_key:
+MOV DX, OFFSET cat_tab
+JMP keyboard_cat_done
+
+keyboard_cat_fn_key:
+MOV DX, OFFSET cat_function
+JMP keyboard_cat_done
+
+keyboard_cat_arrow_key:
+MOV DX, OFFSET cat_arrow
+JMP keyboard_cat_done
+
+keyboard_cat_other_key:
+MOV DX, OFFSET cat_other
+
+keyboard_cat_done:
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET msg_history
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET msg_last
+MOV AH,09h
+INT 21h
+MOV AL, LastKey
+MOV pressed_key, AL
+
+MOV DX,OFFSET pressed_key
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET msg_prev
+MOV AH,09h
+INT 21h
+MOV AL, PrevKey
+MOV pressed_key, AL
+
+MOV DX,OFFSET pressed_key
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+JMP keyboard_main_loop
+
+show_keyboard_summary:
+MOV DX,OFFSET msg_summary
+MOV AH,09h
+INT 21h
+
+MOV AL,KeyCount
+CMP AL,0
+JE keyboard_done_exit
+
+XOR AH,AH
+MOV CX,AX
+XOR SI,SI
+
+keyboard_summary_loop:
+MOV DX,OFFSET msg_ascii
+MOV AH,09h
+INT 21h
+
+MOV BX,OFFSET KeyASCII
+ADD BX,SI
+MOV AL,[BX]
+CALL ConvertASCII
+MOV DX,OFFSET ascii_buffer
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+MOV DX,OFFSET msg_scan
+MOV AH,09h
+INT 21h
+
+MOV BX,OFFSET KeySCAN
+ADD BX,SI
+MOV AL,[BX]
+CALL ConvertSCAN
+MOV DX,OFFSET scan_buffer
+MOV AH,09h
+INT 21h
+MOV DX,OFFSET newline
+MOV AH,09h
+INT 21h
+
+INC SI
+DEC CX
+JNZ keyboard_summary_loop
+
+keyboard_done_exit:
+MOV DX,OFFSET msg_exit_kb
+MOV AH,09h
+INT 21h
+
+RET
+
+KEYBOARD_INPUT_MAIN ENDP
+
+ConvertASCII PROC
+PUSH AX
+PUSH SI
+
+MOV BL, AL
+MOV SI, OFFSET hex_digits
+
+MOV AL, BL
+SHR AL, 4
+XOR AH, AH
+ADD SI, AX
+MOV AL, [SI]
+MOV ascii_buffer, AL
+
+MOV SI, OFFSET hex_digits
+MOV AL, BL
+AND AL, 0Fh
+XOR AH, AH
+ADD SI, AX
+MOV AL, [SI]
+MOV ascii_buffer+1, AL
+
+POP SI
+POP AX
+RET
+ConvertASCII ENDP
+
+ConvertSCAN PROC
+PUSH AX
+PUSH SI
+
+MOV BL, AL
+MOV SI, OFFSET hex_digits
+
+MOV AL, BL
+SHR AL, 4
+XOR AH, AH
+ADD SI, AX
+MOV AL, [SI]
+MOV scan_buffer, AL
+
+MOV SI, OFFSET hex_digits
+MOV AL, BL
+AND AL, 0Fh
+XOR AH, AH
+ADD SI, AX
+MOV AL, [SI]
+MOV scan_buffer+1, AL
+
+POP SI
+POP AX
+RET
+ConvertSCAN ENDP
+
+ConvertBinary PROC
+PUSH AX
+PUSH BX
+PUSH CX
+PUSH DI
+
+MOV BL, AL
+LEA DI, bin_buffer
+MOV CX, 8
+
+binary_loop:
+TEST BL,80h
+JZ zero_bit
+MOV BYTE PTR [DI],'1'
+JMP cont_bit
+zero_bit:
+MOV BYTE PTR [DI],'0'
+cont_bit:
+SHL BL,1
+INC DI
+LOOP binary_loop
+
+POP DI
+POP CX
+POP BX
+POP AX
+RET
+ConvertBinary ENDP
+
+VGA_GRAPHICS_MAIN PROC
+CALL SAVE_VIDEO_STATE
+
+VGA_MAIN_LOOP:
+CALL DISPLAY_VGA_BANNER
+CALL DISPLAY_VGA_MENU
+
+CALL GET_VGA_CHOICE
+
+CMP user_choice_effect, '0'
+JE VGA_EXIT
+
+CMP user_choice_effect, '1'
+JB VGA_INVALID_CHOICE
+CMP user_choice_effect, '2'
+JA VGA_INVALID_CHOICE
+
+MOV AL, user_choice_effect
+SUB AL, '0'
+MOV selected_effect, AL
+
+MOV DX, OFFSET msg_rendering
+MOV AH, 09h
+INT 21h
+
+CALL INIT_GRAPHICS_MODE
+CALL RENDER_SELECTED_EFFECT
+
+MOV AH, 00h
+INT KEYBOARD_INT
+
+CALL RESTORE_VIDEO_STATE
+
+MOV DX, OFFSET msg_complete
+MOV AH, 09h
+INT 21h
+
+MOV DX, OFFSET msg_press_key_vga
+MOV AH, 09h
+INT 21h
+
+MOV AH, 01h
+INT 21h
+
+JMP VGA_MAIN_LOOP
+
+VGA_INVALID_CHOICE:
+MOV DX, OFFSET msg_invalid_vga
+MOV AH, 09h
+INT 21h
+JMP VGA_MAIN_LOOP
+
+VGA_EXIT:
+CALL RESTORE_VIDEO_STATE
+RET
+VGA_GRAPHICS_MAIN ENDP
+
+DISPLAY_VGA_BANNER PROC
+PUSH AX
+PUSH DX
+
+MOV DX, OFFSET msg_banner
+MOV AH, 09h
+INT 21h
+
+POP DX
+POP AX
+RET
+DISPLAY_VGA_BANNER ENDP
+
+DISPLAY_VGA_MENU PROC
+PUSH AX
+PUSH DX
+
+MOV DX, OFFSET msg_menu_vga
+MOV AH, 09h
+INT 21h
+
+MOV DX, OFFSET msg_prompt_vga
+MOV AH, 09h
+INT 21h
+
+POP DX
+POP AX
+RET
+DISPLAY_VGA_MENU ENDP
+
+GET_VGA_CHOICE PROC
+PUSH AX
+
+MOV AH, 01h
+INT 21h
+MOV user_choice_effect, AL
+
+POP AX
+RET
+GET_VGA_CHOICE ENDP
+
+SAVE_VIDEO_STATE PROC
+PUSH AX
+
+MOV AH, BIOS_GET_MODE
+INT VIDEO_INT
+MOV original_video_mode, AL
+
+POP AX
+RET
+SAVE_VIDEO_STATE ENDP
+
+INIT_GRAPHICS_MODE PROC
+PUSH AX
+
+MOV AH, BIOS_SET_MODE
+MOV AL, MODE_VGA_13h
+INT VIDEO_INT
+
+POP AX
+RET
+INIT_GRAPHICS_MODE ENDP
+
+RENDER_SELECTED_EFFECT PROC
+PUSH AX
+
+MOV AL, selected_effect
+
+CMP AL, EFFECT_HORIZONTAL
+JE RENDER_HORIZ
+CMP AL, EFFECT_PLASMA
+JE RENDER_PLASM
+JMP RENDER_DONE
+
+RENDER_HORIZ:
+CALL RENDER_HORIZONTAL
+JMP RENDER_DONE
+
+RENDER_PLASM:
+CALL RENDER_PLASMA
+
+RENDER_DONE:
+POP AX
+RET
+RENDER_SELECTED_EFFECT ENDP
+
+RENDER_HORIZONTAL PROC
+PUSH AX
+PUSH BX
+PUSH CX
+PUSH DX
+PUSH DI
+PUSH ES
+
+MOV AX, VGA_SEGMENT
+MOV ES, AX
+
+MOV BX, CANVAS_HEIGHT
+MOV SI, CANVAS_START_Y
+
+HORIZ_ROW_LOOP:
+MOV AX, SI
+PUSH BX
+MOV BX, 320
+MUL BX
+POP BX
+ADD AX, CANVAS_START_X
+MOV DI, AX
+
+XOR DX, DX
+MOV CX, 80
+
+HORIZ_PAIR_LOOP:
+MOV AX, DX
+SHL AX, 8
+PUSH DX
+MOV DX, 0
+PUSH BX
+MOV BX, 160
+DIV BX
+POP BX
+POP DX
+PUSH AX
+
+INC DX
+MOV AX, DX
+SHL AX, 8
+PUSH DX
+MOV DX, 0
+PUSH BX
+MOV BX, 160
+DIV BX
+POP BX
+POP DX
+MOV AH, AL
+POP BX
+MOV AL, BL
+PUSH BX
+
+STOSW
+
+POP BX
+INC DX
+LOOP HORIZ_PAIR_LOOP
+
+INC SI
+DEC BX
+JNZ HORIZ_ROW_LOOP
+
+POP ES
+POP DI
+POP DX
+POP CX
+POP BX
+POP AX
+RET
+RENDER_HORIZONTAL ENDP
+
+RENDER_PLASMA PROC
+PUSH AX
+PUSH CX
+PUSH DX
+PUSH DI
+PUSH SI
+PUSH ES
+
+MOV AX, VGA_SEGMENT
+MOV ES, AX
+
+XOR SI, SI
+
+PLASMA_ROW_LOOP:
+MOV AX, SI
+ADD AX, CANVAS_START_Y
+PUSH BX
+MOV BX, 320
+MUL BX
+POP BX
+ADD AX, CANVAS_START_X
+MOV DI, AX
+
+XOR DX, DX
+MOV CX, 80
+
+PLASMA_PAIR_LOOP:
+MOV AX, DX
+ADD AX, SI
+PUSH AX
+
+INC DX
+MOV AX, DX
+ADD AX, SI
+MOV AH, AL
+POP BX
+MOV AL, BL
+
+STOSW
+
+INC DX
+LOOP PLASMA_PAIR_LOOP
+
+INC SI
+CMP SI, CANVAS_HEIGHT
+JB PLASMA_ROW_LOOP
+
+POP ES
+POP SI
+POP DI
+POP DX
+POP CX
+POP AX
+RET
+RENDER_PLASMA ENDP
+
+RESTORE_VIDEO_STATE PROC
+PUSH AX
+MOV AH, BIOS_SET_MODE
+MOV AL, original_video_mode
+INT VIDEO_INT
+POP AX
+RET
+RESTORE_VIDEO_STATE ENDP
+
+END MAIN
+
+
+
+; [SOURCE]: E:\SZABIST\3rd Semester\COAL\Project\MainFile.asm

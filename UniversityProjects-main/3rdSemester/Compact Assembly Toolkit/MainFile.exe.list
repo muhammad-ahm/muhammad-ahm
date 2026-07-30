@@ -1,0 +1,1581 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+MainFile.exe -- emu8086 assembler version: 4.08  
+ 
+[ 12/27/2025  --  3:24:07 AM ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       .MODEL SMALL
+[   2]        :                                       .STACK 100h
+[   3]        :                                       
+[   4]        :                                       .DATA
+[   5]    0100: 0D 0A                                 msg_welcome DB 0Dh, 0Ah
+[   6]    0102: 43 4F 4D 42 49 4E 45 44 20 41 53 53   DB 'COMBINED ASSEMBLY MODULES SYSTEM', 0Dh, 0Ah, '$'
+                45 4D 42 4C 59 20 4D 4F 44 55 4C 45 
+                53 20 53 59 53 54 45 4D 0D 0A 24    
+[   7]    0125: 0D 0A                                 msg_main_menu DB 0Dh, 0Ah
+[   8]    0127: 53 45 4C 45 43 54 20 4D 4F 44 55 4C   DB 'SELECT MODULE:', 0Dh, 0Ah
+                45 3A 0D 0A                         
+[   9]    0137: 5B 31 5D 20 53 6D 61 72 74 20 43 61   DB '[1] Smart Calculator', 0Dh, 0Ah
+                6C 63 75 6C 61 74 6F 72 0D 0A       
+[  10]    014D: 5B 32 5D 20 4B 65 79 62 6F 61 72 64   DB '[2] Keyboard Input Demonstration', 0Dh, 0Ah
+                20 49 6E 70 75 74 20 44 65 6D 6F 6E 
+                73 74 72 61 74 69 6F 6E 0D 0A       
+[  11]    016F: 5B 33 5D 20 47 72 61 70 68 69 63 20   DB '[3] Graphic Effects Renderer', 0Dh, 0Ah
+                45 66 66 65 63 74 73 20 52 65 6E 64 
+                65 72 65 72 0D 0A                   
+[  12]    018D: 5B 30 5D 20 45 78 69 74 20 50 72 6F   DB '[0] Exit Program', 0Dh, 0Ah
+                67 72 61 6D 0D 0A                   
+[  13]    019F: 0D 0A 45 6E 74 65 72 20 79 6F 75 72   DB 0Dh, 0Ah, 'Enter your choice (0-3): $'
+                20 63 68 6F 69 63 65 20 28 30 2D 33 
+                29 3A 20 24                         
+[  14]    01BB: 0D 0A                                 msg_invalid DB 0Dh, 0Ah
+[  15]    01BD: 45 52 52 4F 52 3A 20 49 6E 76 61 6C   DB 'ERROR: Invalid selection! Please enter 0-3.', 0Dh, 0Ah, '$'
+                69 64 20 73 65 6C 65 63 74 69 6F 6E 
+                21 20 50 6C 65 61 73 65 20 65 6E 74 
+                65 72 20 30 2D 33 2E 0D 0A 24       
+[  16]    01EB: 0D 0A                                 msg_goodbye DB 0Dh, 0Ah
+[  17]    01ED: 54 68 61 6E 6B 20 79 6F 75 20 66 6F   DB 'Thank you for using Combined Modules!', 0Dh, 0Ah
+                72 20 75 73 69 6E 67 20 43 6F 6D 62 
+                69 6E 65 64 20 4D 6F 64 75 6C 65 73 
+                21 0D 0A                            
+[  18]    0214: 0D 0A 24                              DB 0Dh, 0Ah, '$'
+[  19]    0217: 00                                    user_choice DB ?
+[  20]        :                                       VGA_SEGMENT EQU 0A000h
+[  21]        :                                       VIDEO_INT EQU 10h
+[  22]        :                                       DOS_INT EQU 21h
+[  23]        :                                       KEYBOARD_INT EQU 16h
+[  24]        :                                       MODE_TEXT_80x25 EQU 03h
+[  25]        :                                       MODE_VGA_13h EQU 13h
+[  26]        :                                       SCREEN_WIDTH EQU 320
+[  27]        :                                       SCREEN_HEIGHT EQU 200
+[  28]        :                                       CANVAS_WIDTH EQU 160
+[  29]        :                                       CANVAS_HEIGHT EQU 100
+[  30]        :                                       CANVAS_START_X EQU 80
+[  31]        :                                       CANVAS_START_Y EQU 50
+[  32]        :                                       BIOS_SET_MODE EQU 00h
+[  33]        :                                       BIOS_GET_MODE EQU 0Fh
+[  34]        :                                       DOS_PRINT_STRING EQU 09h
+[  35]        :                                       DOS_READ_CHAR EQU 01h
+[  36]        :                                       DOS_TERMINATE EQU 4Ch
+[  37]        :                                       EFFECT_HORIZONTAL EQU 1
+[  38]        :                                       EFFECT_PLASMA EQU 2
+[  39]    0218: 00                                    original_video_mode DB ?
+[  40]    0219: 00                                    selected_effect DB ?
+[  41]    021A: 00                                    user_choice_effect DB ?
+[  42]    021B: 0D 0A                                 msg_banner DB 0Dh, 0Ah
+[  43]    021D: 56 47 41 20 47 52 41 50 48 49 43 53   DB 'VGA GRAPHICS RENDERER v3.0', 0Dh, 0Ah
+                20 52 45 4E 44 45 52 45 52 20 76 33 
+                2E 30 0D 0A                         
+[  44]    0239: 54 77 6F 20 45 66 66 65 63 74 20 44   DB 'Two Effect Display System', 0Dh, 0Ah
+                69 73 70 6C 61 79 20 53 79 73 74 65 
+                6D 0D 0A                            
+[  45]    0254: 0D 0A 24                              DB 0Dh, 0Ah, '$'
+[  46]    0257: 0D 0A                                 msg_menu_vga DB 0Dh, 0Ah
+[  47]    0259: 53 45 4C 45 43 54 20 47 52 41 50 48   DB 'SELECT GRAPHICS EFFECT:', 0Dh, 0Ah
+                49 43 53 20 45 46 46 45 43 54 3A 0D 
+                0A                                  
+[  48]    0272: 5B 31 5D 20 48 6F 72 69 7A 6F 6E 74   DB '[1] Horizontal Gradient', 0Dh, 0Ah
+                61 6C 20 47 72 61 64 69 65 6E 74 0D 
+                0A                                  
+[  49]    028B: 5B 32 5D 20 50 6C 61 73 6D 61 20 45   DB '[2] Plasma Effect', 0Dh, 0Ah
+                66 66 65 63 74 0D 0A                
+[  50]    029E: 5B 30 5D 20 42 61 63 6B 20 74 6F 20   DB '[0] Back to Main Menu', 0Dh, 0Ah
+                4D 61 69 6E 20 4D 65 6E 75 0D 0A    
+[  51]    02B5: 0D 0A 24                              DB 0Dh, 0Ah, '$'
+[  52]    02B8: 45 6E 74 65 72 20 79 6F 75 72 20 63   msg_prompt_vga DB 'Enter your choice (0-2): $'
+                68 6F 69 63 65 20 28 30 2D 32 29 3A 
+                20 24                               
+[  53]    02D2: 0D 0A 52 65 6E 64 65 72 69 6E 67 20   msg_rendering DB 0Dh, 0Ah, 'Rendering effect...', 0Dh, 0Ah, '$'
+                65 66 66 65 63 74 2E 2E 2E 0D 0A 24 
+                                                    
+[  54]    02EA: 0D 0A 45 66 66 65 63 74 20 64 69 73   msg_complete DB 0Dh, 0Ah, 'Effect displayed!', 0Dh, 0Ah, '$'
+                70 6C 61 79 65 64 21 0D 0A 24       
+[  55]    0300: 0D 0A                                 msg_invalid_vga DB 0Dh, 0Ah
+[  56]    0302: 45 52 52 4F 52 3A 20 49 6E 76 61 6C   DB 'ERROR: Invalid selection! Please enter 0-2.', 0Dh, 0Ah, '$'
+                69 64 20 73 65 6C 65 63 74 69 6F 6E 
+                21 20 50 6C 65 61 73 65 20 65 6E 74 
+                65 72 20 30 2D 32 2E 0D 0A 24       
+[  57]    0330: 0D 0A 50 72 65 73 73 20 61 6E 79 20   msg_press_key_vga DB 0Dh, 0Ah, 'Press any key to continue...', '$'
+                6B 65 79 20 74 6F 20 63 6F 6E 74 69 
+                6E 75 65 2E 2E 2E 24                
+[  58]    034F: 0D 0A 4B 45 59 42 4F 41 52 44 20 49   msg_title      DB 13,10,"KEYBOARD INPUT DEMONSTRATION",13,10,"$"
+                4E 50 55 54 20 44 45 4D 4F 4E 53 54 
+                52 41 54 49 4F 4E 0D 0A 24          
+[  59]    0370: 0D 0A 50 72 65 73 73 20 61 6E 79 20   msg_press_key  DB 13,10,"Press any key (ESC to show summary)...",13,10,"$"
+                6B 65 79 20 28 45 53 43 20 74 6F 20 
+                73 68 6F 77 20 73 75 6D 6D 61 72 79 
+                29 2E 2E 2E 0D 0A 24                
+[  60]    039B: 59 6F 75 20 70 72 65 73 73 65 64 3A   msg_key        DB "You pressed: ","$"
+                20 24                               
+[  61]    03A9: 3F 24                                 pressed_key    DB "?", "$"
+[  62]    03AB: 3F                                    RawASCII       DB '?'
+[  63]    03AC: 41 53 43 49 49 20 20 20 3A 20 24      msg_ascii      DB "ASCII    : $"
+[  64]    03B7: 53 43 41 4E 20 20 20 20 3A 20 24      msg_scan       DB "SCAN     : $"
+[  65]    03C2: 42 69 6E 61 72 79 20 20 3A 20 24      msg_binary     DB "Binary   : $"
+[  66]    03CD: 54 79 70 65 20 20 20 20 3A 20 24      msg_type       DB "Type     : $"
+[  67]    03D8: 43 61 74 65 67 6F 72 79 3A 20 24      msg_category   DB "Category : $"
+[  68]    03E3: 41 6C 70 68 61 62 65 74 24            type_alpha     DB "Alphabet","$"
+[  69]    03EC: 44 69 67 69 74 24                     type_digit     DB "Digit","$"
+[  70]    03F2: 53 70 65 63 69 61 6C 20 43 68 61 72   type_special   DB "Special Character","$"
+                61 63 74 65 72 24                   
+[  71]    0404: 50 72 69 6E 74 61 62 6C 65 20 43 68   cat_printable  DB "Printable Character","$"
+                61 72 61 63 74 65 72 24             
+[  72]    0418: 53 70 61 63 65 20 4B 65 79 24         cat_space      DB "Space Key","$"
+[  73]    0422: 45 6E 74 65 72 20 4B 65 79 24         cat_enter      DB "Enter Key","$"
+[  74]    042C: 42 61 63 6B 73 70 61 63 65 24         cat_backspace  DB "Backspace","$"
+[  75]    0436: 54 61 62 20 4B 65 79 24               cat_tab        DB "Tab Key","$"
+[  76]    043E: 41 72 72 6F 77 20 4B 65 79 24         cat_arrow      DB "Arrow Key","$"
+[  77]    0448: 46 75 6E 63 74 69 6F 6E 20 4B 65 79   cat_function   DB "Function Key","$"
+                24                                  
+[  78]    0455: 4F 74 68 65 72 20 53 70 65 63 69 61   cat_other      DB "Other Special Key","$"
+                6C 20 4B 65 79 24                   
+[  79]    0467: 0D 0A 48 69 73 74 6F 72 79 3A 0D 0A   msg_history    DB 13,10,"History:",13,10,"$"
+                24                                  
+[  80]    0474: 20 4C 61 73 74 20 4B 65 79 20 20 3A   msg_last       DB " Last Key   : ","$"
+                20 24                               
+[  81]    0482: 20 50 72 65 76 69 6F 75 73 20 20 3A   msg_prev       DB " Previous   : ","$"
+                20 24                               
+[  82]    0490: 0D 0A 35 2D 4B 65 79 20 42 75 66 66   msg_summary    DB 13,10,"5-Key Buffer Summary",13,10,"$"
+                65 72 20 53 75 6D 6D 61 72 79 0D 0A 
+                24                                  
+[  83]    04A9: 0D 0A 45 78 69 74 69 6E 67 20 6B 65   msg_exit_kb    DB 13,10,"Exiting keyboard module...returning to main menu",13,10,"$"
+                79 62 6F 61 72 64 20 6D 6F 64 75 6C 
+                65 2E 2E 2E 72 65 74 75 72 6E 69 6E 
+                67 20 74 6F 20 6D 61 69 6E 20 6D 65 
+                6E 75 0D 0A 24                      
+[  84]    04DE: 0D 0A 24                              newline        DB 13,10,"$"
+[  85]    04E1: 30 30 68 24                           ascii_buffer   DB "00h","$"
+[  86]    04E5: 30 30 68 24                           scan_buffer    DB "00h","$"
+[  87]    04E9: 30 30 30 30 30 30 30 30 24            bin_buffer     DB "00000000","$"
+[  88]    04F2: 30 31 32 33 34 35 36 37 38 39 41 42   hex_digits     DB "0123456789ABCDEF"
+                43 44 45 46                         
+[  89]    0502: 00                                    KeyCount       DB 0
+[  90]    0503: 00 00 00 00 00                        KeyASCII       DB 5 DUP(?)
+[  91]    0508: 00 00 00 00 00                        KeySCAN        DB 5 DUP(?)
+[  92]    050D: 3F                                    LastKey        DB '?'
+[  93]    050E: 3F                                    PrevKey        DB '?'
+[  94]        :                                       PI_VAL EQU 314159
+[  95]        :                                       EULER_VAL EQU 271828
+[  96]        :                                       G_RATIO_VAL EQU 161803
+[  97]        :                                       C_L_VAL EQU 299792458
+[  98]        :                                       F_C_VAL EQU 466920
+[  99]        :                                       EULER_MC_VAL EQU 57721
+[ 100]        :                                       PYTH_C_VAL EQU 141421
+[ 101]        :                                       FSC_VAL EQU 729
+[ 102]    050F: 00 00                                 num1 DW ?
+[ 103]    0511: 00 00                                 num2 DW ?
+[ 104]    0513: 00 00                                 result DW ?
+[ 105]    0515: 00                                    operation DB ?
+[ 106]    0516: 00                                    main_choice DB ?
+[ 107]    0517: 00                                    constant_choice DB ?
+[ 108]    0518: 14 00 00 00 00 00 00 00 00 00 00 00   buffer1 DB 20, ?, 20 DUP(?)
+                00 00 00 00 00 00 00 00 00 00       
+[ 109]    052E: 14 00 00 00 00 00 00 00 00 00 00 00   buffer2 DB 20, ?, 20 DUP(?)
+                00 00 00 00 00 00 00 00 00 00       
+[ 110]    0544: 0D 0A 24                              crlf DB 0dh, 0ah, '$'
+[ 111]    0547: 0D 0A 20 20 43 41 4C 43 55 4C 41 54   msg_main_calc DB 0dh, 0ah, '  CALCULATOR MENU  ', 0dh, 0ah
+                4F 52 20 4D 45 4E 55 20 20 0D 0A    
+[ 112]    055E: 31 2E 20 50 65 72 66 6F 72 6D 20 4F   DB '1. Perform Operation', 0dh, 0ah
+                70 65 72 61 74 69 6F 6E 0D 0A       
+[ 113]    0574: 32 2E 20 56 69 65 77 20 43 6F 6E 73   DB '2. View Constants', 0dh, 0ah
+                74 61 6E 74 73 0D 0A                
+[ 114]    0587: 30 2E 20 42 61 63 6B 20 74 6F 20 4D   DB '0. Back to Main Menu', 0dh, 0ah
+                61 69 6E 20 4D 65 6E 75 0D 0A       
+[ 115]    059D: 45 6E 74 65 72 20 79 6F 75 72 20 63   DB 'Enter your choice (0-2): $'
+                68 6F 69 63 65 20 28 30 2D 32 29 3A 
+                20 24                               
+[ 116]    05B7: 0D 0A 45 6E 74 65 72 20 66 69 72 73   msg1 DB 0dh, 0ah, 'Enter first number: $'
+                74 20 6E 75 6D 62 65 72 3A 20 24    
+[ 117]    05CE: 0D 0A 45 6E 74 65 72 20 73 65 63 6F   msg2 DB 0dh, 0ah, 'Enter second number: $'
+                6E 64 20 6E 75 6D 62 65 72 3A 20 24 
+                                                    
+[ 118]    05E6: 0D 0A 53 65 6C 65 63 74 20 6F 70 65   msg_op DB 0dh, 0ah, 'Select operation:', 0dh, 0ah
+                72 61 74 69 6F 6E 3A 0D 0A          
+[ 119]    05FB: 2B 20 28 50 6C 75 73 29 0D 0A         DB '+ (Plus)', 0dh, 0ah
+[ 120]    0605: 2D 20 28 4D 69 6E 75 73 29 0D 0A      DB '- (Minus)', 0dh, 0ah
+[ 121]    0610: 78 20 28 4D 75 6C 74 69 70 6C 79 29   DB 'x (Multiply)', 0dh, 0ah
+                0D 0A                               
+[ 122]    061E: 2F 20 28 44 69 76 69 64 65 29 0D 0A   DB '/ (Divide)', 0dh, 0ah
+                                                    
+[ 123]    062A: 25 20 28 4D 6F 64 75 6C 75 73 29 0D   DB '% (Modulus)', 0dh, 0ah
+                0A                                  
+[ 124]    0637: 5E 20 28 50 6F 77 65 72 29 0D 0A      DB '^ (Power)', 0dh, 0ah
+[ 125]    0642: 45 6E 74 65 72 20 79 6F 75 72 20 63   DB 'Enter your choice: $'
+                68 6F 69 63 65 3A 20 24             
+[ 126]    0656: 0D 0A 53 65 6C 65 63 74 20 43 6F 6E   msg_constant DB 0dh, 0ah, 'Select Constant:', 0dh, 0ah
+                73 74 61 6E 74 3A 0D 0A             
+[ 127]    066A: 31 2E 20 50 69 20 43 6F 6E 73 74 61   DB '1. Pi Constant', 0dh, 0ah
+                6E 74 0D 0A                         
+[ 128]    067A: 32 2E 20 45 75 6C 65 72 73 20 54 68   DB '2. Eulers Theorem', 0dh, 0ah
+                65 6F 72 65 6D 0D 0A                
+[ 129]    068D: 33 2E 20 47 6F 6C 64 65 6E 20 52 61   DB '3. Golden Ratio', 0dh, 0ah
+                74 69 6F 0D 0A                      
+[ 130]    069E: 34 2E 20 53 70 65 65 64 20 6F 66 20   DB '4. Speed of Light in Vacuum', 0dh, 0ah
+                4C 69 67 68 74 20 69 6E 20 56 61 63 
+                75 75 6D 0D 0A                      
+[ 131]    06BB: 35 2E 20 46 65 69 67 65 6E 62 61 75   DB '5. Feigenbaum Constant', 0dh, 0ah
+                6D 20 43 6F 6E 73 74 61 6E 74 0D 0A 
+                                                    
+[ 132]    06D3: 36 2E 20 45 75 6C 65 72 2D 4D 61 73   DB '6. Euler-Mascheroni Constant', 0dh, 0ah
+                63 68 65 72 6F 6E 69 20 43 6F 6E 73 
+                74 61 6E 74 0D 0A                   
+[ 133]    06F1: 37 2E 20 50 79 74 68 61 67 6F 72 61   DB '7. Pythagoras Constant', 0dh, 0ah
+                73 20 43 6F 6E 73 74 61 6E 74 0D 0A 
+                                                    
+[ 134]    0709: 38 2E 20 46 69 6E 65 2D 53 74 72 75   DB '8. Fine-Structure Constant', 0dh, 0ah
+                63 74 75 72 65 20 43 6F 6E 73 74 61 
+                6E 74 0D 0A                         
+[ 135]    0725: 45 6E 74 65 72 20 63 68 6F 69 63 65   DB 'Enter choice (1-8): $'
+                20 28 31 2D 38 29 3A 20 24          
+[ 136]    073A: 0D 0A 52 65 73 75 6C 74 3A 20 24      msg_result DB 0dh, 0ah, 'Result: $'
+[ 137]    0745: 0D 0A 49 6E 76 61 6C 69 64 20 6F 70   msg_invalid_calc DB 0dh, 0ah, 'Invalid operation!$'
+                65 72 61 74 69 6F 6E 21 24          
+[ 138]    075A: 0D 0A 45 72 72 6F 72 3A 20 44 69 76   msg_div_zero DB 0dh, 0ah, 'Error: Division by zero!$'
+                69 73 69 6F 6E 20 62 79 20 7A 65 72 
+                6F 21 24                            
+[ 139]    0775: 0D 0A 43 6F 6E 73 74 61 6E 74 20 76   msg_const_val DB 0dh, 0ah, 'Constant value: $'
+                61 6C 75 65 3A 20 24                
+[ 140]    0788: 0D 0A 50 65 72 66 6F 72 6D 20 61 6E   msg_another DB 0dh, 0ah, 'Perform another operation with this result? (Y/N): $'
+                6F 74 68 65 72 20 6F 70 65 72 61 74 
+                69 6F 6E 20 77 69 74 68 20 74 68 69 
+                73 20 72 65 73 75 6C 74 3F 20 28 59 
+                2F 4E 29 3A 20 24                   
+[ 141]    07BE: 0D 0A 53 74 61 72 74 20 6E 65 77 20   msg_new_calc DB 0dh, 0ah, 'Start new calculation with this result? (Y/N): $'
+                63 61 6C 63 75 6C 61 74 69 6F 6E 20 
+                77 69 74 68 20 74 68 69 73 20 72 65 
+                73 75 6C 74 3F 20 28 59 2F 4E 29 3A 
+                20 24                               
+[ 142]    07F0: 0D 0A 45 78 69 74 69 6E 67 20 63 61   msg_exit_calc DB 0dh, 0ah, 'Exiting calculator...returning to main menu', 0dh, 0ah, '$'
+                6C 63 75 6C 61 74 6F 72 2E 2E 2E 72 
+                65 74 75 72 6E 69 6E 67 20 74 6F 20 
+                6D 61 69 6E 20 6D 65 6E 75 0D 0A 24 
+                                                    
+[ 143]    0820: 33 2E 31 34 31 35 39 24               name_pi DB '3.14159$'
+[ 144]    0828: 32 2E 37 31 38 32 38 24               name_euler DB '2.71828$'
+[ 145]    0830: 31 2E 36 31 38 30 33 24               name_golden DB '1.61803$'
+[ 146]    0838: 32 39 39 37 39 32 34 35 38 24         name_light DB '299792458$'
+[ 147]    0842: 34 2E 36 36 39 32 30 24               name_feigen DB '4.66920$'
+[ 148]    084A: 30 2E 35 37 37 32 31 35 24            name_euler_m DB '0.577215$'
+[ 149]    0853: 31 2E 34 31 34 32 31 33 24            name_pyth DB '1.414213$'
+[ 150]    085C: 30 2E 30 30 37 32 39 37 24            name_fsc DB '0.007297$'
+[ 151]        :                                       
+[ 152]        :                                       .CODE
+[ 153]    0870:                                       MAIN PROC
+[ 154]    0870: B8 10 00                              MOV AX, @DATA
+[ 155]    0873: 8E D8                                 MOV DS, AX
+[ 156]    0875: 8E C0                                 MOV ES, AX
+[ 157]        :                                       
+[ 158]    0877: E8 47 00                              CALL DISPLAY_WELCOME
+[ 159]        :                                       
+[ 160]    087A:                                       MAIN_LOOP:
+[ 161]    087A: E8 50 00                              CALL DISPLAY_MAIN_MENU
+[ 162]    087D: E8 59 00                              CALL GET_MAIN_CHOICE
+[ 163]        :                                       
+[ 164]    0880: 80 3E 17 01 30                        CMP user_choice, '0'
+[ 165]    0885: 74 2D                                 JE EXIT_MAIN_PROGRAM
+[ 166]        :                                       
+[ 167]    0887: 80 3E 17 01 31                        CMP user_choice, '1'
+[ 168]    088C: 74 17                                 JE LAUNCH_CALCULATOR_MODULE
+[ 169]        :                                       
+[ 170]    088E: 80 3E 17 01 32                        CMP user_choice, '2'
+[ 171]    0893: 74 15                                 JE LAUNCH_KEYBOARD_MODULE
+[ 172]        :                                       
+[ 173]    0895: 80 3E 17 01 33                        CMP user_choice, '3'
+[ 174]    089A: 74 13                                 JE LAUNCH_VGA_MODULE
+[ 175]        :                                       
+[ 176]    089C: BA BB 00                              MOV DX, OFFSET msg_invalid
+[ 177]    089F: B4 09                                 MOV AH, 09h
+[ 178]    08A1: CD 21                                 INT 21h
+[ 179]        :                                       
+[ 180]    08A3: EB D5                                 JMP MAIN_LOOP
+[ 181]        :                                       
+[ 182]    08A5:                                       LAUNCH_CALCULATOR_MODULE:
+[ 183]    08A5: E8 3B 00                              CALL CALCULATOR_MAIN
+[ 184]    08A8: EB D0                                 JMP MAIN_LOOP
+[ 185]        :                                       
+[ 186]    08AA:                                       LAUNCH_KEYBOARD_MODULE:
+[ 187]    08AA: E8 2C 03                              CALL KEYBOARD_INPUT_MAIN
+[ 188]    08AD: EB CB                                 JMP MAIN_LOOP
+[ 189]        :                                       
+[ 190]    08AF:                                       LAUNCH_VGA_MODULE:
+[ 191]    08AF: E8 31 06                              CALL VGA_GRAPHICS_MAIN
+[ 192]    08B2: EB C6                                 JMP MAIN_LOOP
+[ 193]        :                                       
+[ 194]    08B4:                                       EXIT_MAIN_PROGRAM:
+[ 195]    08B4: BA EB 00                              MOV DX, OFFSET msg_goodbye
+[ 196]    08B7: B4 09                                 MOV AH, 09h
+[ 197]    08B9: CD 21                                 INT 21h
+[ 198]        :                                       
+[ 199]    08BB: B4 4C                                 MOV AH, 4Ch
+[ 200]    08BD: B0 00                                 MOV AL, 0
+[ 201]    08BF: CD 21                                 INT 21h
+[ 202]        :                                       
+[ 203]        :                                       MAIN ENDP
+[ 204]        :                                       
+[ 205]    08C1:                                       DISPLAY_WELCOME PROC
+[ 206]    08C1: 50                                    PUSH AX
+[ 207]    08C2: 52                                    PUSH DX
+[ 208]        :                                       
+[ 209]    08C3: BA 00 00                              MOV DX, OFFSET msg_welcome
+[ 210]    08C6: B4 09                                 MOV AH, 09h
+[ 211]    08C8: CD 21                                 INT 21h
+[ 212]        :                                       
+[ 213]    08CA: 5A                                    POP DX
+[ 214]    08CB: 58                                    POP AX
+[ 215]    08CC: C3                                    RET
+[ 216]        :                                       DISPLAY_WELCOME ENDP
+[ 217]        :                                       
+[ 218]    08CD:                                       DISPLAY_MAIN_MENU PROC
+[ 219]    08CD: 50                                    PUSH AX
+[ 220]    08CE: 52                                    PUSH DX
+[ 221]        :                                       
+[ 222]    08CF: BA 25 00                              MOV DX, OFFSET msg_main_menu
+[ 223]    08D2: B4 09                                 MOV AH, 09h
+[ 224]    08D4: CD 21                                 INT 21h
+[ 225]        :                                       
+[ 226]    08D6: 5A                                    POP DX
+[ 227]    08D7: 58                                    POP AX
+[ 228]    08D8: C3                                    RET
+[ 229]        :                                       DISPLAY_MAIN_MENU ENDP
+[ 230]        :                                       
+[ 231]    08D9:                                       GET_MAIN_CHOICE PROC
+[ 232]    08D9: 50                                    PUSH AX
+[ 233]        :                                       
+[ 234]    08DA: B4 01                                 MOV AH, 01h
+[ 235]    08DC: CD 21                                 INT 21h
+[ 236]    08DE: A2 17 01                              MOV user_choice, AL
+[ 237]        :                                       
+[ 238]    08E1: 58                                    POP AX
+[ 239]    08E2: C3                                    RET
+[ 240]        :                                       GET_MAIN_CHOICE ENDP
+[ 241]        :                                       
+[ 242]    08E3:                                       CALCULATOR_MAIN PROC
+[ 243]    08E3: B8 10 00                              MOV AX, @data
+[ 244]    08E6: 8E D8                                 MOV DS, AX
+[ 245]        :                                       
+[ 246]    08E8:                                       calculator_menu_loop:
+[ 247]    08E8: BA 47 04                              MOV DX, OFFSET msg_main_calc
+[ 248]    08EB: B4 09                                 MOV AH, 09h
+[ 249]    08ED: CD 21                                 INT 21h
+[ 250]        :                                       
+[ 251]    08EF: B4 01                                 MOV AH, 01h
+[ 252]    08F1: CD 21                                 INT 21h
+[ 253]    08F3: A2 16 04                              MOV main_choice, AL
+[ 254]        :                                       
+[ 255]    08F6: 3C 30                                 CMP AL, '0'
+[ 256]    08F8: 75 03 E9 0D 02                        JE calc_exit_proc
+[ 257]    08FD: 3C 31                                 CMP AL, '1'
+[ 258]    08FF: 74 10                                 JE calc_operations_mode
+[ 259]    0901: 3C 32                                 CMP AL, '2'
+[ 260]    0903: 75 03 E9 88 00                        JE calc_constants_mode
+[ 261]        :                                       
+[ 262]    0908: BA 45 06                              MOV DX, OFFSET msg_invalid_calc
+[ 263]    090B: B4 09                                 MOV AH, 09h
+[ 264]    090D: CD 21                                 INT 21h
+[ 265]    090F: EB D7                                 JMP calculator_menu_loop
+[ 266]        :                                       
+[ 267]    0911:                                       calc_operations_mode:
+[ 268]    0911: BA B7 04                              MOV DX, OFFSET msg1
+[ 269]    0914: B4 09                                 MOV AH, 09h
+[ 270]    0916: CD 21                                 INT 21h
+[ 271]    0918: BA 18 04                              MOV DX, OFFSET buffer1
+[ 272]    091B: B4 0A                                 MOV AH, 0Ah
+[ 273]    091D: CD 21                                 INT 21h
+[ 274]    091F: E8 2D 02                              CALL str_to_int
+[ 275]    0922: A3 0F 04                              MOV num1, AX
+[ 276]        :                                       
+[ 277]    0925:                                       calc_operations_loop:
+[ 278]    0925: BA CE 04                              MOV DX, OFFSET msg2
+[ 279]    0928: B4 09                                 MOV AH, 09h
+[ 280]    092A: CD 21                                 INT 21h
+[ 281]    092C: BA 2E 04                              MOV DX, OFFSET buffer2
+[ 282]    092F: B4 0A                                 MOV AH, 0Ah
+[ 283]    0931: CD 21                                 INT 21h
+[ 284]    0933: E8 5E 02                              CALL str_to_int2
+[ 285]    0936: A3 11 04                              MOV num2, AX
+[ 286]        :                                       
+[ 287]    0939: BA E6 04                              MOV DX, OFFSET msg_op
+[ 288]    093C: B4 09                                 MOV AH, 09h
+[ 289]    093E: CD 21                                 INT 21h
+[ 290]    0940: B4 01                                 MOV AH, 01h
+[ 291]    0942: CD 21                                 INT 21h
+[ 292]    0944: A2 15 04                              MOV operation, AL
+[ 293]        :                                       
+[ 294]    0947: B4 0D                                 MOV AH, 0Dh
+[ 295]    0949: CD 21                                 INT 21h
+[ 296]        :                                       
+[ 297]    094B: BA 3A 06                              MOV DX, OFFSET msg_result
+[ 298]    094E: B4 09                                 MOV AH, 09h
+[ 299]    0950: CD 21                                 INT 21h
+[ 300]        :                                       
+[ 301]    0952: A0 15 04                              MOV AL, operation
+[ 302]    0955: 3C 2B                                 CMP AL, '+'
+[ 303]    0957: 75 03 E9 A3 00                        JE calc_do_plus
+[ 304]    095C: 3C 2D                                 CMP AL, '-'
+[ 305]    095E: 75 03 E9 AC 00                        JE calc_do_minus
+[ 306]    0963: 3C 78                                 CMP AL, 'x'
+[ 307]    0965: 75 03 E9 B4 00                        JE calc_do_mult
+[ 308]    096A: 3C 58                                 CMP AL, 'X'
+[ 309]    096C: 75 03 E9 AD 00                        JE calc_do_mult
+[ 310]    0971: 3C 2F                                 CMP AL, '/'
+[ 311]    0973: 75 03 E9 B5 00                        JE calc_do_div
+[ 312]    0978: 3C 25                                 CMP AL, '%'
+[ 313]    097A: 75 03 E9 D0 00                        JE calc_do_mod
+[ 314]    097F: 3C 5E                                 CMP AL, '^'
+[ 315]    0981: 75 03 E9 ED 00                        JE calc_do_pow
+[ 316]        :                                       
+[ 317]    0986: BA 45 06                              MOV DX, OFFSET msg_invalid_calc
+[ 318]    0989: B4 09                                 MOV AH, 09h
+[ 319]    098B: CD 21                                 INT 21h
+[ 320]    098D: E9 0B 01                              JMP calc_continue_operations
+[ 321]        :                                       
+[ 322]    0990:                                       calc_constants_mode:
+[ 323]    0990:                                       calc_constants_loop:
+[ 324]    0990: BA 56 05                              MOV DX, OFFSET msg_constant
+[ 325]    0993: B4 09                                 MOV AH, 09h
+[ 326]    0995: CD 21                                 INT 21h
+[ 327]        :                                       
+[ 328]    0997: B4 01                                 MOV AH, 01h
+[ 329]    0999: CD 21                                 INT 21h
+[ 330]    099B: A2 17 04                              MOV constant_choice, AL
+[ 331]        :                                       
+[ 332]    099E: BA 75 06                              MOV DX, OFFSET msg_const_val
+[ 333]    09A1: B4 09                                 MOV AH, 09h
+[ 334]    09A3: CD 21                                 INT 21h
+[ 335]        :                                       
+[ 336]    09A5: A0 17 04                              MOV AL, constant_choice
+[ 337]    09A8: 3C 31                                 CMP AL, '1'
+[ 338]    09AA: 75 03 E9 0B 01                        JE calc_const_pi
+[ 339]    09AF: 3C 32                                 CMP AL, '2'
+[ 340]    09B1: 75 03 E9 0E 01                        JE calc_const_euler
+[ 341]    09B6: 3C 33                                 CMP AL, '3'
+[ 342]    09B8: 75 03 E9 11 01                        JE calc_const_golden
+[ 343]    09BD: 3C 34                                 CMP AL, '4'
+[ 344]    09BF: 75 03 E9 14 01                        JE calc_const_light
+[ 345]    09C4: 3C 35                                 CMP AL, '5'
+[ 346]    09C6: 75 03 E9 17 01                        JE calc_const_feigen
+[ 347]    09CB: 3C 36                                 CMP AL, '6'
+[ 348]    09CD: 75 03 E9 1A 01                        JE calc_const_euler_m
+[ 349]    09D2: 3C 37                                 CMP AL, '7'
+[ 350]    09D4: 75 03 E9 1D 01                        JE calc_const_pyth
+[ 351]    09D9: 3C 38                                 CMP AL, '8'
+[ 352]    09DB: 75 03 E9 20 01                        JE calc_const_fsc
+[ 353]        :                                       
+[ 354]    09E0: BA 45 06                              MOV DX, OFFSET msg_invalid_calc
+[ 355]    09E3: B4 09                                 MOV AH, 09h
+[ 356]    09E5: CD 21                                 INT 21h
+[ 357]    09E7: EB 00                                 JMP calc_continue_constants
+[ 358]        :                                       
+[ 359]    09E9:                                       calc_continue_constants:
+[ 360]    09E9: BA 88 06                              MOV DX, OFFSET msg_another
+[ 361]    09EC: B4 09                                 MOV AH, 09h
+[ 362]    09EE: CD 21                                 INT 21h
+[ 363]    09F0: B4 01                                 MOV AH, 01h
+[ 364]    09F2: CD 21                                 INT 21h
+[ 365]    09F4: 3C 79                                 CMP AL, 'y'
+[ 366]    09F6: 74 98                                 JE calc_constants_loop
+[ 367]    09F8: 3C 59                                 CMP AL, 'Y'
+[ 368]    09FA: 74 94                                 JE calc_constants_loop
+[ 369]    09FC: E9 E9 FE                              JMP calculator_menu_loop
+[ 370]        :                                       
+[ 371]    09FF:                                       calc_do_plus:
+[ 372]    09FF: A1 0F 04                              MOV AX, num1
+[ 373]    0A02: 03 06 11 04                           ADD AX, num2
+[ 374]    0A06: A3 13 04                              MOV result, AX
+[ 375]    0A09: E8 06 01                              CALL print_int
+[ 376]    0A0C: E9 8C 00                              JMP calc_continue_operations
+[ 377]        :                                       
+[ 378]    0A0F:                                       calc_do_minus:
+[ 379]    0A0F: A1 0F 04                              MOV AX, num1
+[ 380]    0A12: 2B 06 11 04                           SUB AX, num2
+[ 381]    0A16: A3 13 04                              MOV result, AX
+[ 382]    0A19: E8 F6 00                              CALL print_int
+[ 383]    0A1C: EB 7D                                 JMP calc_continue_operations
+[ 384]        :                                       
+[ 385]    0A1E:                                       calc_do_mult:
+[ 386]    0A1E: A1 0F 04                              MOV AX, num1
+[ 387]    0A21: F7 2E 11 04                           IMUL num2
+[ 388]    0A25: A3 13 04                              MOV result, AX
+[ 389]    0A28: E8 E7 00                              CALL print_int
+[ 390]    0A2B: EB 6E                                 JMP calc_continue_operations
+[ 391]        :                                       
+[ 392]    0A2D:                                       calc_do_div:
+[ 393]    0A2D: 8B 1E 11 04                           MOV BX, num2
+[ 394]    0A31: 83 FB 00                              CMP BX, 0
+[ 395]    0A34: 75 09                                 JNE calc_div_safe
+[ 396]    0A36: BA 5A 06                              MOV DX, OFFSET msg_div_zero
+[ 397]    0A39: B4 09                                 MOV AH, 09h
+[ 398]    0A3B: CD 21                                 INT 21h
+[ 399]    0A3D: EB 5C                                 JMP calc_continue_operations
+[ 400]    0A3F:                                       calc_div_safe:
+[ 401]    0A3F: A1 0F 04                              MOV AX, num1
+[ 402]    0A42: 99                                    CWD
+[ 403]    0A43: F7 3E 11 04                           IDIV num2
+[ 404]    0A47: A3 13 04                              MOV result, AX
+[ 405]    0A4A: E8 C5 00                              CALL print_int
+[ 406]    0A4D: EB 4C                                 JMP calc_continue_operations
+[ 407]        :                                       
+[ 408]    0A4F:                                       calc_do_mod:
+[ 409]    0A4F: 8B 1E 11 04                           MOV BX, num2
+[ 410]    0A53: 83 FB 00                              CMP BX, 0
+[ 411]    0A56: 75 09                                 JNE calc_mod_safe
+[ 412]    0A58: BA 5A 06                              MOV DX, OFFSET msg_div_zero
+[ 413]    0A5B: B4 09                                 MOV AH, 09h
+[ 414]    0A5D: CD 21                                 INT 21h
+[ 415]    0A5F: EB 3A                                 JMP calc_continue_operations
+[ 416]    0A61:                                       calc_mod_safe:
+[ 417]    0A61: A1 0F 04                              MOV AX, num1
+[ 418]    0A64: 99                                    CWD
+[ 419]    0A65: F7 3E 11 04                           IDIV num2
+[ 420]    0A69: 8B C2                                 MOV AX, DX
+[ 421]    0A6B: A3 13 04                              MOV result, AX
+[ 422]    0A6E: E8 A1 00                              CALL print_int
+[ 423]    0A71: EB 28                                 JMP calc_continue_operations
+[ 424]        :                                       
+[ 425]    0A73:                                       calc_do_pow:
+[ 426]    0A73: 8B 0E 11 04                           MOV CX, num2
+[ 427]    0A77: 83 F9 00                              CMP CX, 0
+[ 428]    0A7A: 7C 14                                 JL calc_pow_done
+[ 429]    0A7C: 74 0D                                 JE calc_pow_zero
+[ 430]        :                                       
+[ 431]    0A7E: B8 01 00                              MOV AX, 1
+[ 432]    0A81: 8B 1E 0F 04                           MOV BX, num1
+[ 433]    0A85:                                       calc_pow_loop:
+[ 434]    0A85: F7 EB                                 IMUL BX
+[ 435]    0A87: E2 FC                                 LOOP calc_pow_loop
+[ 436]    0A89: EB 08                                 JMP calc_pow_print
+[ 437]        :                                       
+[ 438]    0A8B:                                       calc_pow_zero:
+[ 439]    0A8B: B8 01 00                              MOV AX, 1
+[ 440]    0A8E: EB 03                                 JMP calc_pow_print
+[ 441]        :                                       
+[ 442]    0A90:                                       calc_pow_done:
+[ 443]    0A90: B8 00 00                              MOV AX, 0
+[ 444]        :                                       
+[ 445]    0A93:                                       calc_pow_print:
+[ 446]    0A93: A3 13 04                              MOV result, AX
+[ 447]    0A96: E8 79 00                              CALL print_int
+[ 448]    0A99: EB 00                                 JMP calc_continue_operations
+[ 449]        :                                       
+[ 450]    0A9B:                                       calc_continue_operations:
+[ 451]    0A9B: BA BE 06                              MOV DX, OFFSET msg_new_calc
+[ 452]    0A9E: B4 09                                 MOV AH, 09h
+[ 453]    0AA0: CD 21                                 INT 21h
+[ 454]    0AA2: B4 01                                 MOV AH, 01h
+[ 455]    0AA4: CD 21                                 INT 21h
+[ 456]    0AA6: 3C 79                                 CMP AL, 'y'
+[ 457]    0AA8: 74 07                                 JE calc_use_result_as_first
+[ 458]    0AAA: 3C 59                                 CMP AL, 'Y'
+[ 459]    0AAC: 74 03                                 JE calc_use_result_as_first
+[ 460]    0AAE: E9 37 FE                              JMP calculator_menu_loop
+[ 461]        :                                       
+[ 462]    0AB1:                                       calc_use_result_as_first:
+[ 463]    0AB1: A1 13 04                              MOV AX, result
+[ 464]    0AB4: A3 0F 04                              MOV num1, AX
+[ 465]    0AB7: E9 6B FE                              JMP calc_operations_loop
+[ 466]        :                                       
+[ 467]    0ABA:                                       calc_const_pi:
+[ 468]    0ABA: BA 20 07                              MOV DX, OFFSET name_pi
+[ 469]    0ABD: B4 09                                 MOV AH, 09h
+[ 470]    0ABF: CD 21                                 INT 21h
+[ 471]    0AC1: E9 25 FF                              JMP calc_continue_constants
+[ 472]        :                                       
+[ 473]    0AC4:                                       calc_const_euler:
+[ 474]    0AC4: BA 28 07                              MOV DX, OFFSET name_euler
+[ 475]    0AC7: B4 09                                 MOV AH, 09h
+[ 476]    0AC9: CD 21                                 INT 21h
+[ 477]    0ACB: E9 1B FF                              JMP calc_continue_constants
+[ 478]        :                                       
+[ 479]    0ACE:                                       calc_const_golden:
+[ 480]    0ACE: BA 30 07                              MOV DX, OFFSET name_golden
+[ 481]    0AD1: B4 09                                 MOV AH, 09h
+[ 482]    0AD3: CD 21                                 INT 21h
+[ 483]    0AD5: E9 11 FF                              JMP calc_continue_constants
+[ 484]        :                                       
+[ 485]    0AD8:                                       calc_const_light:
+[ 486]    0AD8: BA 38 07                              MOV DX, OFFSET name_light
+[ 487]    0ADB: B4 09                                 MOV AH, 09h
+[ 488]    0ADD: CD 21                                 INT 21h
+[ 489]    0ADF: E9 07 FF                              JMP calc_continue_constants
+[ 490]        :                                       
+[ 491]    0AE2:                                       calc_const_feigen:
+[ 492]    0AE2: BA 42 07                              MOV DX, OFFSET name_feigen
+[ 493]    0AE5: B4 09                                 MOV AH, 09h
+[ 494]    0AE7: CD 21                                 INT 21h
+[ 495]    0AE9: E9 FD FE                              JMP calc_continue_constants
+[ 496]        :                                       
+[ 497]    0AEC:                                       calc_const_euler_m:
+[ 498]    0AEC: BA 4A 07                              MOV DX, OFFSET name_euler_m
+[ 499]    0AEF: B4 09                                 MOV AH, 09h
+[ 500]    0AF1: CD 21                                 INT 21h
+[ 501]    0AF3: E9 F3 FE                              JMP calc_continue_constants
+[ 502]        :                                       
+[ 503]    0AF6:                                       calc_const_pyth:
+[ 504]    0AF6: BA 53 07                              MOV DX, OFFSET name_pyth
+[ 505]    0AF9: B4 09                                 MOV AH, 09h
+[ 506]    0AFB: CD 21                                 INT 21h
+[ 507]    0AFD: E9 E9 FE                              JMP calc_continue_constants
+[ 508]        :                                       
+[ 509]    0B00:                                       calc_const_fsc:
+[ 510]    0B00: BA 5C 07                              MOV DX, OFFSET name_fsc
+[ 511]    0B03: B4 09                                 MOV AH, 09h
+[ 512]    0B05: CD 21                                 INT 21h
+[ 513]    0B07: E9 DF FE                              JMP calc_continue_constants
+[ 514]        :                                       
+[ 515]    0B0A:                                       calc_exit_proc:
+[ 516]    0B0A: BA F0 06                              MOV DX, OFFSET msg_exit_calc
+[ 517]    0B0D: B4 09                                 MOV AH, 09h
+[ 518]    0B0F: CD 21                                 INT 21h
+[ 519]    0B11: C3                                    RET
+[ 520]        :                                       
+[ 521]        :                                       CALCULATOR_MAIN ENDP
+[ 522]        :                                       
+[ 523]    0B12:                                       print_int PROC
+[ 524]    0B12: 50                                    PUSH AX
+[ 525]    0B13: 53                                    PUSH BX
+[ 526]    0B14: 51                                    PUSH CX
+[ 527]    0B15: 52                                    PUSH DX
+[ 528]        :                                       
+[ 529]    0B16: 85 C0                                 TEST AX, AX
+[ 530]    0B18: 79 0A                                 JNS calc_positive
+[ 531]    0B1A: 50                                    PUSH AX
+[ 532]    0B1B: B2 2D                                 MOV DL, '-'
+[ 533]    0B1D: B4 02                                 MOV AH, 2
+[ 534]    0B1F: CD 21                                 INT 21h
+[ 535]    0B21: 58                                    POP AX
+[ 536]    0B22: F7 D8                                 NEG AX
+[ 537]        :                                       
+[ 538]    0B24:                                       calc_positive:
+[ 539]    0B24: B9 00 00                              MOV CX, 0
+[ 540]    0B27: BB 0A 00                              MOV BX, 10
+[ 541]        :                                       
+[ 542]    0B2A: 3D 00 00                              CMP AX, 0
+[ 543]    0B2D: 75 04                                 JNE calc_convert_loop
+[ 544]    0B2F: 50                                    PUSH AX
+[ 545]    0B30: 41                                    INC CX
+[ 546]    0B31: EB 0D                                 JMP calc_print_digits
+[ 547]        :                                       
+[ 548]    0B33:                                       calc_convert_loop:
+[ 549]    0B33: 3D 00 00                              CMP AX, 0
+[ 550]    0B36: 74 08                                 JE calc_print_digits
+[ 551]    0B38: 33 D2                                 XOR DX, DX
+[ 552]    0B3A: F7 F3                                 DIV BX
+[ 553]    0B3C: 52                                    PUSH DX
+[ 554]    0B3D: 41                                    INC CX
+[ 555]    0B3E: EB F3                                 JMP calc_convert_loop
+[ 556]        :                                       
+[ 557]    0B40:                                       calc_print_digits:
+[ 558]    0B40: 5A                                    POP DX
+[ 559]    0B41: 80 C2 30                              ADD DL, '0'
+[ 560]    0B44: B4 02                                 MOV AH, 2
+[ 561]    0B46: CD 21                                 INT 21h
+[ 562]    0B48: E2 F6                                 LOOP calc_print_digits
+[ 563]        :                                       
+[ 564]    0B4A: 5A                                    POP DX
+[ 565]    0B4B: 59                                    POP CX
+[ 566]    0B4C: 5B                                    POP BX
+[ 567]    0B4D: 58                                    POP AX
+[ 568]    0B4E: C3                                    RET
+[ 569]        :                                       print_int ENDP
+[ 570]        :                                       
+[ 571]    0B4F:                                       str_to_int PROC
+[ 572]    0B4F: 53                                    PUSH BX
+[ 573]    0B50: 51                                    PUSH CX
+[ 574]    0B51: 52                                    PUSH DX
+[ 575]    0B52: 56                                    PUSH SI
+[ 576]        :                                       
+[ 577]    0B53: BE 1A 04                              MOV SI, OFFSET buffer1 + 2
+[ 578]    0B56: 8A 0E 19 04                           MOV CL, [buffer1 + 1]
+[ 579]    0B5A: B5 00                                 MOV CH, 0
+[ 580]        :                                       
+[ 581]    0B5C: BB 01 00                              MOV BX, 1
+[ 582]    0B5F: 8A 04                                 MOV AL, [SI]
+[ 583]    0B61: 3C 2D                                 CMP AL, '-'
+[ 584]    0B63: 75 05                                 JNE calc_parse_number
+[ 585]    0B65: BB FF FF                              MOV BX, -1
+[ 586]    0B68: 46                                    INC SI
+[ 587]    0B69: 49                                    DEC CX
+[ 588]        :                                       
+[ 589]    0B6A:                                       calc_parse_number:
+[ 590]    0B6A: B8 00 00                              MOV AX, 0
+[ 591]        :                                       
+[ 592]    0B6D:                                       calc_parse_loop:
+[ 593]    0B6D: 83 F9 00                              CMP CX, 0
+[ 594]    0B70: 74 16                                 JE calc_parse_done
+[ 595]        :                                       
+[ 596]    0B72: 53                                    PUSH BX
+[ 597]    0B73: 8A 1C                                 MOV BL, [SI]
+[ 598]    0B75: 80 EB 30                              SUB BL, '0'
+[ 599]    0B78: B7 00                                 MOV BH, 0
+[ 600]        :                                       
+[ 601]    0B7A: 53                                    PUSH BX
+[ 602]    0B7B: BB 0A 00                              MOV BX, 10
+[ 603]    0B7E: F7 E3                                 MUL BX
+[ 604]    0B80: 5B                                    POP BX
+[ 605]    0B81: 03 C3                                 ADD AX, BX
+[ 606]    0B83: 5B                                    POP BX
+[ 607]        :                                       
+[ 608]    0B84: 46                                    INC SI
+[ 609]    0B85: 49                                    DEC CX
+[ 610]    0B86: EB E5                                 JMP calc_parse_loop
+[ 611]        :                                       
+[ 612]    0B88:                                       calc_parse_done:
+[ 613]    0B88: 83 FB 01                              CMP BX, 1
+[ 614]    0B8B: 74 02                                 JE calc_no_negate
+[ 615]    0B8D: F7 D8                                 NEG AX
+[ 616]        :                                       
+[ 617]    0B8F:                                       calc_no_negate:
+[ 618]    0B8F: 5E                                    POP SI
+[ 619]    0B90: 5A                                    POP DX
+[ 620]    0B91: 59                                    POP CX
+[ 621]    0B92: 5B                                    POP BX
+[ 622]    0B93: C3                                    RET
+[ 623]        :                                       str_to_int ENDP
+[ 624]        :                                       
+[ 625]    0B94:                                       str_to_int2 PROC
+[ 626]    0B94: 53                                    PUSH BX
+[ 627]    0B95: 51                                    PUSH CX
+[ 628]    0B96: 52                                    PUSH DX
+[ 629]    0B97: 56                                    PUSH SI
+[ 630]        :                                       
+[ 631]    0B98: BE 30 04                              MOV SI, OFFSET buffer2 + 2
+[ 632]    0B9B: 8A 0E 2F 04                           MOV CL, [buffer2 + 1]
+[ 633]    0B9F: B5 00                                 MOV CH, 0
+[ 634]        :                                       
+[ 635]    0BA1: BB 01 00                              MOV BX, 1
+[ 636]    0BA4: 8A 04                                 MOV AL, [SI]
+[ 637]    0BA6: 3C 2D                                 CMP AL, '-'
+[ 638]    0BA8: 75 05                                 JNE calc_parse_number2
+[ 639]    0BAA: BB FF FF                              MOV BX, -1
+[ 640]    0BAD: 46                                    INC SI
+[ 641]    0BAE: 49                                    DEC CX
+[ 642]        :                                       
+[ 643]    0BAF:                                       calc_parse_number2:
+[ 644]    0BAF: B8 00 00                              MOV AX, 0
+[ 645]        :                                       
+[ 646]    0BB2:                                       calc_parse_loop2:
+[ 647]    0BB2: 83 F9 00                              CMP CX, 0
+[ 648]    0BB5: 74 16                                 JE calc_parse_done2
+[ 649]        :                                       
+[ 650]    0BB7: 53                                    PUSH BX
+[ 651]    0BB8: 8A 1C                                 MOV BL, [SI]
+[ 652]    0BBA: 80 EB 30                              SUB BL, '0'
+[ 653]    0BBD: B7 00                                 MOV BH, 0
+[ 654]        :                                       
+[ 655]    0BBF: 53                                    PUSH BX
+[ 656]    0BC0: BB 0A 00                              MOV BX, 10
+[ 657]    0BC3: F7 E3                                 MUL BX
+[ 658]    0BC5: 5B                                    POP BX
+[ 659]    0BC6: 03 C3                                 ADD AX, BX
+[ 660]    0BC8: 5B                                    POP BX
+[ 661]        :                                       
+[ 662]    0BC9: 46                                    INC SI
+[ 663]    0BCA: 49                                    DEC CX
+[ 664]    0BCB: EB E5                                 JMP calc_parse_loop2
+[ 665]        :                                       
+[ 666]    0BCD:                                       calc_parse_done2:
+[ 667]    0BCD: 83 FB 01                              CMP BX, 1
+[ 668]    0BD0: 74 02                                 JE calc_no_negate2
+[ 669]    0BD2: F7 D8                                 NEG AX
+[ 670]        :                                       
+[ 671]    0BD4:                                       calc_no_negate2:
+[ 672]    0BD4: 5E                                    POP SI
+[ 673]    0BD5: 5A                                    POP DX
+[ 674]    0BD6: 59                                    POP CX
+[ 675]    0BD7: 5B                                    POP BX
+[ 676]    0BD8: C3                                    RET
+[ 677]        :                                       str_to_int2 ENDP
+[ 678]        :                                       
+[ 679]    0BD9:                                       KEYBOARD_INPUT_MAIN PROC
+[ 680]    0BD9: B4 00                                 MOV AH,0
+[ 681]    0BDB: B0 03                                 MOV AL,3
+[ 682]    0BDD: CD 10                                 INT 10h
+[ 683]        :                                       
+[ 684]    0BDF: BA 4F 02                              MOV DX,OFFSET msg_title
+[ 685]    0BE2: B4 09                                 MOV AH,09h
+[ 686]    0BE4: CD 21                                 INT 21h
+[ 687]        :                                       
+[ 688]    0BE6:                                       keyboard_main_loop:
+[ 689]    0BE6: BA 70 02                              MOV DX, OFFSET msg_press_key
+[ 690]    0BE9: B4 09                                 MOV AH,09h
+[ 691]    0BEB: CD 21                                 INT 21h
+[ 692]        :                                       
+[ 693]    0BED: B4 00                                 MOV AH,00h
+[ 694]    0BEF: CD 16                                 INT 16h
+[ 695]        :                                       
+[ 696]    0BF1: 8A D8                                 MOV BL, AL
+[ 697]    0BF3: 8A FC                                 MOV BH, AH
+[ 698]    0BF5: A2 AB 02                              MOV RawASCII, AL
+[ 699]        :                                       
+[ 700]    0BF8: 80 FB 1B                              CMP BL,1Bh
+[ 701]    0BFB: 75 03 E9 08 02                        JE show_keyboard_summary
+[ 702]        :                                       
+[ 703]    0C00: A0 02 04                              MOV AL,KeyCount
+[ 704]    0C03: 3C 05                                 CMP AL,5
+[ 705]    0C05: 73 16                                 JAE keyboard_skip_store
+[ 706]        :                                       
+[ 707]    0C07: 32 E4                                 XOR AH,AH
+[ 708]    0C09: 8B F0                                 MOV SI,AX
+[ 709]    0C0B: BF 03 04                              MOV DI,OFFSET KeyASCII
+[ 710]    0C0E: 03 FE                                 ADD DI,SI
+[ 711]    0C10: 88 1D                                 MOV [DI],BL
+[ 712]        :                                       
+[ 713]    0C12: BF 08 04                              MOV DI,OFFSET KeySCAN
+[ 714]    0C15: 03 FE                                 ADD DI,SI
+[ 715]    0C17: 88 3D                                 MOV [DI],BH
+[ 716]        :                                       
+[ 717]    0C19: FE 06 02 04                           INC KeyCount
+[ 718]        :                                       
+[ 719]    0C1D:                                       keyboard_skip_store:
+[ 720]        :                                       
+[ 721]    0C1D: A0 0D 04                              MOV AL,LastKey
+[ 722]    0C20: A2 0E 04                              MOV PrevKey,AL
+[ 723]        :                                       
+[ 724]    0C23: 8A C3                                 MOV AL,BL
+[ 725]    0C25: 3C 20                                 CMP AL,20h
+[ 726]    0C27: 72 09                                 JB keyboard_map_special
+[ 727]    0C29: 3C 7E                                 CMP AL,7Eh
+[ 728]    0C2B: 77 05                                 JA keyboard_map_special
+[ 729]        :                                       
+[ 730]    0C2D: A2 0D 04                              MOV LastKey,AL
+[ 731]    0C30: EB 74                                 JMP keyboard_show_info
+[ 732]        :                                       
+[ 733]    0C32:                                       keyboard_map_special:
+[ 734]    0C32: 80 FB 20                              CMP BL,20h
+[ 735]    0C35: 74 30                                 JE keyboard_space_key
+[ 736]    0C37: 80 FB 0D                              CMP BL,0Dh
+[ 737]    0C3A: 74 32                                 JE keyboard_enter_key
+[ 738]    0C3C: 80 FB 09                              CMP BL,09h
+[ 739]    0C3F: 74 34                                 JE keyboard_tab_key
+[ 740]    0C41: 80 FB 08                              CMP BL,08h
+[ 741]    0C44: 74 36                                 JE keyboard_backsp_key
+[ 742]        :                                       
+[ 743]    0C46: 8A C7                                 MOV AL,BH
+[ 744]    0C48: 3C 48                                 CMP AL,48h
+[ 745]    0C4A: 74 37                                 JE keyboard_up
+[ 746]    0C4C: 3C 50                                 CMP AL,50h
+[ 747]    0C4E: 74 3A                                 JE keyboard_down
+[ 748]    0C50: 3C 4B                                 CMP AL,4Bh
+[ 749]    0C52: 74 3D                                 JE keyboard_left
+[ 750]    0C54: 3C 4D                                 CMP AL,4Dh
+[ 751]    0C56: 74 40                                 JE keyboard_right
+[ 752]        :                                       
+[ 753]    0C58: 3C 3B                                 CMP AL,3Bh
+[ 754]    0C5A: 72 04                                 JB keyboard_other_key
+[ 755]    0C5C: 3C 44                                 CMP AL,44h
+[ 756]    0C5E: 76 3F                                 JBE keyboard_fn_key
+[ 757]        :                                       
+[ 758]    0C60:                                       keyboard_other_key:
+[ 759]    0C60: C6 06 0D 04 3F                        MOV LastKey,'?'
+[ 760]    0C65: EB 3F                                 JMP keyboard_show_info
+[ 761]        :                                       
+[ 762]    0C67:                                       keyboard_space_key:
+[ 763]    0C67: C6 06 0D 04 5F                        MOV LastKey, '_'
+[ 764]    0C6C: EB 38                                 JMP keyboard_show_info
+[ 765]        :                                       
+[ 766]    0C6E:                                       keyboard_enter_key:
+[ 767]    0C6E: C6 06 0D 04 20                        MOV LastKey, ' '
+[ 768]    0C73: EB 31                                 JMP keyboard_show_info
+[ 769]        :                                       
+[ 770]    0C75:                                       keyboard_tab_key:
+[ 771]    0C75: C6 06 0D 04 20                        MOV LastKey,' '
+[ 772]    0C7A: EB 2A                                 JMP keyboard_show_info
+[ 773]        :                                       
+[ 774]    0C7C:                                       keyboard_backsp_key:
+[ 775]    0C7C: C6 06 0D 04 20                        MOV LastKey, ' '
+[ 776]    0C81: EB 23                                 JMP keyboard_show_info
+[ 777]        :                                       
+[ 778]    0C83:                                       keyboard_up:
+[ 779]    0C83: C6 06 0D 04 5E                        MOV LastKey, '^'
+[ 780]    0C88: EB 1C                                 JMP keyboard_show_info
+[ 781]        :                                       
+[ 782]    0C8A:                                       keyboard_down:
+[ 783]    0C8A: C6 06 0D 04 76                        MOV LastKey, 'v'
+[ 784]    0C8F: EB 15                                 JMP keyboard_show_info
+[ 785]        :                                       
+[ 786]    0C91:                                       keyboard_left:
+[ 787]    0C91: C6 06 0D 04 3C                        MOV LastKey, '<'
+[ 788]    0C96: EB 0E                                 JMP keyboard_show_info
+[ 789]        :                                       
+[ 790]    0C98:                                       keyboard_right:
+[ 791]    0C98: C6 06 0D 04 3E                        MOV LastKey, '>'
+[ 792]    0C9D: EB 07                                 JMP keyboard_show_info
+[ 793]        :                                       
+[ 794]    0C9F:                                       keyboard_fn_key:
+[ 795]    0C9F: C6 06 0D 04 46                        MOV LastKey, 'F'
+[ 796]    0CA4: EB 00                                 JMP keyboard_show_info
+[ 797]        :                                       
+[ 798]    0CA6:                                       keyboard_show_info:
+[ 799]    0CA6: BA 9B 02                              MOV DX,OFFSET msg_key
+[ 800]    0CA9: B4 09                                 MOV AH,09h
+[ 801]    0CAB: CD 21                                 INT 21h
+[ 802]        :                                       
+[ 803]    0CAD: A0 0D 04                              MOV AL, LastKey
+[ 804]    0CB0: A2 A9 02                              MOV pressed_key, AL
+[ 805]    0CB3: C6 06 AA 02 24                        MOV pressed_key+1,'$'
+[ 806]        :                                       
+[ 807]    0CB8: BA A9 02                              MOV DX,OFFSET pressed_key
+[ 808]    0CBB: B4 09                                 MOV AH,09h
+[ 809]    0CBD: CD 21                                 INT 21h
+[ 810]        :                                       
+[ 811]    0CBF: BA DE 03                              MOV DX,OFFSET newline
+[ 812]    0CC2: B4 09                                 MOV AH,09h
+[ 813]    0CC4: CD 21                                 INT 21h
+[ 814]        :                                       
+[ 815]    0CC6: 8A C3                                 MOV AL,BL
+[ 816]    0CC8: E8 9B 01                              CALL ConvertASCII
+[ 817]    0CCB: BA AC 02                              MOV DX,OFFSET msg_ascii
+[ 818]    0CCE: B4 09                                 MOV AH,09h
+[ 819]    0CD0: CD 21                                 INT 21h
+[ 820]    0CD2: BA E1 03                              MOV DX,OFFSET ascii_buffer
+[ 821]    0CD5: B4 09                                 MOV AH,09h
+[ 822]    0CD7: CD 21                                 INT 21h
+[ 823]    0CD9: BA DE 03                              MOV DX,OFFSET newline
+[ 824]    0CDC: B4 09                                 MOV AH,09h
+[ 825]    0CDE: CD 21                                 INT 21h
+[ 826]        :                                       
+[ 827]    0CE0: 8A C7                                 MOV AL,BH
+[ 828]    0CE2: E8 AE 01                              CALL ConvertSCAN
+[ 829]    0CE5: BA B7 02                              MOV DX,OFFSET msg_scan
+[ 830]    0CE8: B4 09                                 MOV AH,09h
+[ 831]    0CEA: CD 21                                 INT 21h
+[ 832]    0CEC: BA E5 03                              MOV DX,OFFSET scan_buffer
+[ 833]    0CEF: B4 09                                 MOV AH,09h
+[ 834]    0CF1: CD 21                                 INT 21h
+[ 835]    0CF3: BA DE 03                              MOV DX,OFFSET newline
+[ 836]    0CF6: B4 09                                 MOV AH,09h
+[ 837]    0CF8: CD 21                                 INT 21h
+[ 838]        :                                       
+[ 839]    0CFA: A0 AB 02                              MOV AL,RawASCII
+[ 840]    0CFD: E8 C0 01                              CALL ConvertBinary
+[ 841]    0D00: BA C2 02                              MOV DX,OFFSET msg_binary
+[ 842]    0D03: B4 09                                 MOV AH,09h
+[ 843]    0D05: CD 21                                 INT 21h
+[ 844]    0D07: BA E9 03                              MOV DX,OFFSET bin_buffer
+[ 845]    0D0A: B4 09                                 MOV AH,09h
+[ 846]    0D0C: CD 21                                 INT 21h
+[ 847]    0D0E: BA DE 03                              MOV DX,OFFSET newline
+[ 848]    0D11: B4 09                                 MOV AH,09h
+[ 849]    0D13: CD 21                                 INT 21h
+[ 850]        :                                       
+[ 851]    0D15: BA CD 02                              MOV DX,OFFSET msg_type
+[ 852]    0D18: B4 09                                 MOV AH,09h
+[ 853]    0D1A: CD 21                                 INT 21h
+[ 854]        :                                       
+[ 855]    0D1C: A0 AB 02                              MOV AL, RawASCII
+[ 856]    0D1F: 3C 41                                 CMP AL,'A'
+[ 857]    0D21: 72 0C                                 JB keyboard_digit_type
+[ 858]    0D23: 3C 5A                                 CMP AL,'Z'
+[ 859]    0D25: 76 15                                 JBE keyboard_alpha_type
+[ 860]    0D27: 3C 61                                 CMP AL,'a'
+[ 861]    0D29: 72 04                                 JB keyboard_digit_type
+[ 862]    0D2B: 3C 7A                                 CMP AL,'z'
+[ 863]    0D2D: 76 0D                                 JBE keyboard_alpha_type
+[ 864]        :                                       
+[ 865]    0D2F:                                       keyboard_digit_type:
+[ 866]    0D2F: 3C 30                                 CMP AL,'0'
+[ 867]    0D31: 72 04                                 JB keyboard_special_type
+[ 868]    0D33: 3C 39                                 CMP AL,'9'
+[ 869]    0D35: 76 0A                                 JBE keyboard_is_digit
+[ 870]    0D37:                                       keyboard_special_type:
+[ 871]    0D37: BA F2 02                              MOV DX,OFFSET type_special
+[ 872]    0D3A: EB 08                                 JMP keyboard_type_out
+[ 873]    0D3C:                                       keyboard_alpha_type:
+[ 874]    0D3C: BA E3 02                              MOV DX,OFFSET type_alpha
+[ 875]    0D3F: EB 03                                 JMP keyboard_type_out
+[ 876]    0D41:                                       keyboard_is_digit:
+[ 877]    0D41: BA EC 02                              MOV DX,OFFSET type_digit
+[ 878]        :                                       
+[ 879]    0D44:                                       keyboard_type_out:
+[ 880]    0D44: B4 09                                 MOV AH,09h
+[ 881]    0D46: CD 21                                 INT 21h
+[ 882]    0D48: BA DE 03                              MOV DX,OFFSET newline
+[ 883]    0D4B: B4 09                                 MOV AH,09h
+[ 884]    0D4D: CD 21                                 INT 21h
+[ 885]        :                                       
+[ 886]    0D4F: BA D8 02                              MOV DX,OFFSET msg_category
+[ 887]    0D52: B4 09                                 MOV AH,09h
+[ 888]    0D54: CD 21                                 INT 21h
+[ 889]        :                                       
+[ 890]    0D56: A0 AB 02                              MOV AL, RawASCII
+[ 891]    0D59: 8A D7                                 MOV DL,BH
+[ 892]        :                                       
+[ 893]    0D5B: 3C 20                                 CMP AL,20h
+[ 894]    0D5D: 74 3D                                 JE keyboard_cat_space_key
+[ 895]    0D5F: 3C 0D                                 CMP AL,0Dh
+[ 896]    0D61: 74 3E                                 JE keyboard_cat_enter_key
+[ 897]    0D63: 3C 08                                 CMP AL,08h
+[ 898]    0D65: 74 3F                                 JE keyboard_cat_backsp_key
+[ 899]    0D67: 3C 09                                 CMP AL,09h
+[ 900]    0D69: 74 40                                 JE keyboard_cat_tab_key
+[ 901]        :                                       
+[ 902]    0D6B: 3C 00                                 CMP AL,00h
+[ 903]    0D6D: 75 20                                 JNE keyboard_cat_print
+[ 904]    0D6F: 80 FA 3B                              CMP DL,3Bh
+[ 905]    0D72: 72 05                                 JB keyboard_cat_arrow_check
+[ 906]    0D74: 80 FA 44                              CMP DL,44h
+[ 907]    0D77: 76 37                                 JBE keyboard_cat_fn_key
+[ 908]        :                                       
+[ 909]    0D79:                                       keyboard_cat_arrow_check:
+[ 910]    0D79: 80 FA 48                              CMP DL,48h
+[ 911]    0D7C: 74 37                                 JE keyboard_cat_arrow_key
+[ 912]    0D7E: 80 FA 50                              CMP DL,50h
+[ 913]    0D81: 74 32                                 JE keyboard_cat_arrow_key
+[ 914]    0D83: 80 FA 4B                              CMP DL,4Bh
+[ 915]    0D86: 74 2D                                 JE keyboard_cat_arrow_key
+[ 916]    0D88: 80 FA 4D                              CMP DL,4Dh
+[ 917]    0D8B: 74 28                                 JE keyboard_cat_arrow_key
+[ 918]    0D8D: EB 2B                                 JMP keyboard_cat_other_key
+[ 919]        :                                       
+[ 920]    0D8F:                                       keyboard_cat_print:
+[ 921]    0D8F: 3C 20                                 CMP AL,20h
+[ 922]    0D91: 72 27                                 JB keyboard_cat_other_key
+[ 923]    0D93: 3C 7E                                 CMP AL,7Eh
+[ 924]    0D95: 77 23                                 JA keyboard_cat_other_key
+[ 925]    0D97: BA 04 03                              MOV DX,OFFSET cat_printable
+[ 926]    0D9A: EB 21                                 JMP keyboard_cat_done
+[ 927]        :                                       
+[ 928]    0D9C:                                       keyboard_cat_space_key:
+[ 929]    0D9C: BA 18 03                              MOV DX, OFFSET cat_space
+[ 930]    0D9F: EB 1C                                 JMP keyboard_cat_done
+[ 931]        :                                       
+[ 932]    0DA1:                                       keyboard_cat_enter_key:
+[ 933]    0DA1: BA 22 03                              MOV DX, OFFSET cat_enter
+[ 934]    0DA4: EB 17                                 JMP keyboard_cat_done
+[ 935]        :                                       
+[ 936]    0DA6:                                       keyboard_cat_backsp_key:
+[ 937]    0DA6: BA 2C 03                              MOV DX, OFFSET cat_backspace
+[ 938]    0DA9: EB 12                                 JMP keyboard_cat_done
+[ 939]        :                                       
+[ 940]    0DAB:                                       keyboard_cat_tab_key:
+[ 941]    0DAB: BA 36 03                              MOV DX, OFFSET cat_tab
+[ 942]    0DAE: EB 0D                                 JMP keyboard_cat_done
+[ 943]        :                                       
+[ 944]    0DB0:                                       keyboard_cat_fn_key:
+[ 945]    0DB0: BA 48 03                              MOV DX, OFFSET cat_function
+[ 946]    0DB3: EB 08                                 JMP keyboard_cat_done
+[ 947]        :                                       
+[ 948]    0DB5:                                       keyboard_cat_arrow_key:
+[ 949]    0DB5: BA 3E 03                              MOV DX, OFFSET cat_arrow
+[ 950]    0DB8: EB 03                                 JMP keyboard_cat_done
+[ 951]        :                                       
+[ 952]    0DBA:                                       keyboard_cat_other_key:
+[ 953]    0DBA: BA 55 03                              MOV DX, OFFSET cat_other
+[ 954]        :                                       
+[ 955]    0DBD:                                       keyboard_cat_done:
+[ 956]    0DBD: B4 09                                 MOV AH,09h
+[ 957]    0DBF: CD 21                                 INT 21h
+[ 958]        :                                       
+[ 959]    0DC1: BA DE 03                              MOV DX,OFFSET newline
+[ 960]    0DC4: B4 09                                 MOV AH,09h
+[ 961]    0DC6: CD 21                                 INT 21h
+[ 962]        :                                       
+[ 963]    0DC8: BA 67 03                              MOV DX,OFFSET msg_history
+[ 964]    0DCB: B4 09                                 MOV AH,09h
+[ 965]    0DCD: CD 21                                 INT 21h
+[ 966]        :                                       
+[ 967]    0DCF: BA 74 03                              MOV DX,OFFSET msg_last
+[ 968]    0DD2: B4 09                                 MOV AH,09h
+[ 969]    0DD4: CD 21                                 INT 21h
+[ 970]    0DD6: A0 0D 04                              MOV AL, LastKey
+[ 971]    0DD9: A2 A9 02                              MOV pressed_key, AL
+[ 972]        :                                       
+[ 973]    0DDC: BA A9 02                              MOV DX,OFFSET pressed_key
+[ 974]    0DDF: B4 09                                 MOV AH,09h
+[ 975]    0DE1: CD 21                                 INT 21h
+[ 976]    0DE3: BA DE 03                              MOV DX,OFFSET newline
+[ 977]    0DE6: B4 09                                 MOV AH,09h
+[ 978]    0DE8: CD 21                                 INT 21h
+[ 979]        :                                       
+[ 980]    0DEA: BA 82 03                              MOV DX,OFFSET msg_prev
+[ 981]    0DED: B4 09                                 MOV AH,09h
+[ 982]    0DEF: CD 21                                 INT 21h
+[ 983]    0DF1: A0 0E 04                              MOV AL, PrevKey
+[ 984]    0DF4: A2 A9 02                              MOV pressed_key, AL
+[ 985]        :                                       
+[ 986]    0DF7: BA A9 02                              MOV DX,OFFSET pressed_key
+[ 987]    0DFA: B4 09                                 MOV AH,09h
+[ 988]    0DFC: CD 21                                 INT 21h
+[ 989]    0DFE: BA DE 03                              MOV DX,OFFSET newline
+[ 990]    0E01: B4 09                                 MOV AH,09h
+[ 991]    0E03: CD 21                                 INT 21h
+[ 992]        :                                       
+[ 993]    0E05: E9 DE FD                              JMP keyboard_main_loop
+[ 994]        :                                       
+[ 995]    0E08:                                       show_keyboard_summary:
+[ 996]    0E08: BA 90 03                              MOV DX,OFFSET msg_summary
+[ 997]    0E0B: B4 09                                 MOV AH,09h
+[ 998]    0E0D: CD 21                                 INT 21h
+[ 999]        :                                       
+[1000]    0E0F: A0 02 04                              MOV AL,KeyCount
+[1001]    0E12: 3C 00                                 CMP AL,0
+[1002]    0E14: 74 48                                 JE keyboard_done_exit
+[1003]        :                                       
+[1004]    0E16: 32 E4                                 XOR AH,AH
+[1005]    0E18: 8B C8                                 MOV CX,AX
+[1006]    0E1A: 33 F6                                 XOR SI,SI
+[1007]        :                                       
+[1008]    0E1C:                                       keyboard_summary_loop:
+[1009]    0E1C: BA AC 02                              MOV DX,OFFSET msg_ascii
+[1010]    0E1F: B4 09                                 MOV AH,09h
+[1011]    0E21: CD 21                                 INT 21h
+[1012]        :                                       
+[1013]    0E23: BB 03 04                              MOV BX,OFFSET KeyASCII
+[1014]    0E26: 03 DE                                 ADD BX,SI
+[1015]    0E28: 8A 07                                 MOV AL,[BX]
+[1016]    0E2A: E8 39 00                              CALL ConvertASCII
+[1017]    0E2D: BA E1 03                              MOV DX,OFFSET ascii_buffer
+[1018]    0E30: B4 09                                 MOV AH,09h
+[1019]    0E32: CD 21                                 INT 21h
+[1020]    0E34: BA DE 03                              MOV DX,OFFSET newline
+[1021]    0E37: B4 09                                 MOV AH,09h
+[1022]    0E39: CD 21                                 INT 21h
+[1023]        :                                       
+[1024]    0E3B: BA B7 02                              MOV DX,OFFSET msg_scan
+[1025]    0E3E: B4 09                                 MOV AH,09h
+[1026]    0E40: CD 21                                 INT 21h
+[1027]        :                                       
+[1028]    0E42: BB 08 04                              MOV BX,OFFSET KeySCAN
+[1029]    0E45: 03 DE                                 ADD BX,SI
+[1030]    0E47: 8A 07                                 MOV AL,[BX]
+[1031]    0E49: E8 47 00                              CALL ConvertSCAN
+[1032]    0E4C: BA E5 03                              MOV DX,OFFSET scan_buffer
+[1033]    0E4F: B4 09                                 MOV AH,09h
+[1034]    0E51: CD 21                                 INT 21h
+[1035]    0E53: BA DE 03                              MOV DX,OFFSET newline
+[1036]    0E56: B4 09                                 MOV AH,09h
+[1037]    0E58: CD 21                                 INT 21h
+[1038]        :                                       
+[1039]    0E5A: 46                                    INC SI
+[1040]    0E5B: 49                                    DEC CX
+[1041]    0E5C: 75 BE                                 JNZ keyboard_summary_loop
+[1042]        :                                       
+[1043]    0E5E:                                       keyboard_done_exit:
+[1044]    0E5E: BA A9 03                              MOV DX,OFFSET msg_exit_kb
+[1045]    0E61: B4 09                                 MOV AH,09h
+[1046]    0E63: CD 21                                 INT 21h
+[1047]        :                                       
+[1048]    0E65: C3                                    RET
+[1049]        :                                       
+[1050]        :                                       KEYBOARD_INPUT_MAIN ENDP
+[1051]        :                                       
+[1052]    0E66:                                       ConvertASCII PROC
+[1053]    0E66: 50                                    PUSH AX
+[1054]    0E67: 56                                    PUSH SI
+[1055]        :                                       
+[1056]    0E68: 8A D8                                 MOV BL, AL
+[1057]    0E6A: BE F2 03                              MOV SI, OFFSET hex_digits
+[1058]        :                                       
+[1059]    0E6D: 8A C3                                 MOV AL, BL
+[1060]    0E6F: D0 E8 D0 E8 D0 E8 D0 E8               SHR AL, 4
+[1061]    0E77: 32 E4                                 XOR AH, AH
+[1062]    0E79: 03 F0                                 ADD SI, AX
+[1063]    0E7B: 8A 04                                 MOV AL, [SI]
+[1064]    0E7D: A2 E1 03                              MOV ascii_buffer, AL
+[1065]        :                                       
+[1066]    0E80: BE F2 03                              MOV SI, OFFSET hex_digits
+[1067]    0E83: 8A C3                                 MOV AL, BL
+[1068]    0E85: 24 0F                                 AND AL, 0Fh
+[1069]    0E87: 32 E4                                 XOR AH, AH
+[1070]    0E89: 03 F0                                 ADD SI, AX
+[1071]    0E8B: 8A 04                                 MOV AL, [SI]
+[1072]    0E8D: A2 E2 03                              MOV ascii_buffer+1, AL
+[1073]        :                                       
+[1074]    0E90: 5E                                    POP SI
+[1075]    0E91: 58                                    POP AX
+[1076]    0E92: C3                                    RET
+[1077]        :                                       ConvertASCII ENDP
+[1078]        :                                       
+[1079]    0E93:                                       ConvertSCAN PROC
+[1080]    0E93: 50                                    PUSH AX
+[1081]    0E94: 56                                    PUSH SI
+[1082]        :                                       
+[1083]    0E95: 8A D8                                 MOV BL, AL
+[1084]    0E97: BE F2 03                              MOV SI, OFFSET hex_digits
+[1085]        :                                       
+[1086]    0E9A: 8A C3                                 MOV AL, BL
+[1087]    0E9C: D0 E8 D0 E8 D0 E8 D0 E8               SHR AL, 4
+[1088]    0EA4: 32 E4                                 XOR AH, AH
+[1089]    0EA6: 03 F0                                 ADD SI, AX
+[1090]    0EA8: 8A 04                                 MOV AL, [SI]
+[1091]    0EAA: A2 E5 03                              MOV scan_buffer, AL
+[1092]        :                                       
+[1093]    0EAD: BE F2 03                              MOV SI, OFFSET hex_digits
+[1094]    0EB0: 8A C3                                 MOV AL, BL
+[1095]    0EB2: 24 0F                                 AND AL, 0Fh
+[1096]    0EB4: 32 E4                                 XOR AH, AH
+[1097]    0EB6: 03 F0                                 ADD SI, AX
+[1098]    0EB8: 8A 04                                 MOV AL, [SI]
+[1099]    0EBA: A2 E6 03                              MOV scan_buffer+1, AL
+[1100]        :                                       
+[1101]    0EBD: 5E                                    POP SI
+[1102]    0EBE: 58                                    POP AX
+[1103]    0EBF: C3                                    RET
+[1104]        :                                       ConvertSCAN ENDP
+[1105]        :                                       
+[1106]    0EC0:                                       ConvertBinary PROC
+[1107]    0EC0: 50                                    PUSH AX
+[1108]    0EC1: 53                                    PUSH BX
+[1109]    0EC2: 51                                    PUSH CX
+[1110]    0EC3: 57                                    PUSH DI
+[1111]        :                                       
+[1112]    0EC4: 8A D8                                 MOV BL, AL
+[1113]    0EC6: BF E9 03                              LEA DI, bin_buffer
+[1114]    0EC9: B9 08 00                              MOV CX, 8
+[1115]        :                                       
+[1116]    0ECC:                                       binary_loop:
+[1117]    0ECC: F6 C3 80                              TEST BL,80h
+[1118]    0ECF: 74 05                                 JZ zero_bit
+[1119]    0ED1: C6 05 31                              MOV BYTE PTR [DI],'1'
+[1120]    0ED4: EB 03                                 JMP cont_bit
+[1121]    0ED6:                                       zero_bit:
+[1122]    0ED6: C6 05 30                              MOV BYTE PTR [DI],'0'
+[1123]    0ED9:                                       cont_bit:
+[1124]    0ED9: D0 E3                                 SHL BL,1
+[1125]    0EDB: 47                                    INC DI
+[1126]    0EDC: E2 EE                                 LOOP binary_loop
+[1127]        :                                       
+[1128]    0EDE: 5F                                    POP DI
+[1129]    0EDF: 59                                    POP CX
+[1130]    0EE0: 5B                                    POP BX
+[1131]    0EE1: 58                                    POP AX
+[1132]    0EE2: C3                                    RET
+[1133]        :                                       ConvertBinary ENDP
+[1134]        :                                       
+[1135]    0EE3:                                       VGA_GRAPHICS_MAIN PROC
+[1136]    0EE3: E8 84 00                              CALL SAVE_VIDEO_STATE
+[1137]        :                                       
+[1138]    0EE6:                                       VGA_MAIN_LOOP:
+[1139]    0EE6: E8 58 00                              CALL DISPLAY_VGA_BANNER
+[1140]    0EE9: E8 61 00                              CALL DISPLAY_VGA_MENU
+[1141]        :                                       
+[1142]    0EEC: E8 71 00                              CALL GET_VGA_CHOICE
+[1143]        :                                       
+[1144]    0EEF: 80 3E 1A 01 30                        CMP user_choice_effect, '0'
+[1145]    0EF4: 74 47                                 JE VGA_EXIT
+[1146]        :                                       
+[1147]    0EF6: 80 3E 1A 01 31                        CMP user_choice_effect, '1'
+[1148]    0EFB: 72 37                                 JB VGA_INVALID_CHOICE
+[1149]    0EFD: 80 3E 1A 01 32                        CMP user_choice_effect, '2'
+[1150]    0F02: 77 30                                 JA VGA_INVALID_CHOICE
+[1151]        :                                       
+[1152]    0F04: A0 1A 01                              MOV AL, user_choice_effect
+[1153]    0F07: 2C 30                                 SUB AL, '0'
+[1154]    0F09: A2 19 01                              MOV selected_effect, AL
+[1155]        :                                       
+[1156]    0F0C: BA D2 01                              MOV DX, OFFSET msg_rendering
+[1157]    0F0F: B4 09                                 MOV AH, 09h
+[1158]    0F11: CD 21                                 INT 21h
+[1159]        :                                       
+[1160]    0F13: E8 5E 00                              CALL INIT_GRAPHICS_MODE
+[1161]    0F16: E8 64 00                              CALL RENDER_SELECTED_EFFECT
+[1162]        :                                       
+[1163]    0F19: B4 00                                 MOV AH, 00h
+[1164]    0F1B: CD 16                                 INT KEYBOARD_INT
+[1165]        :                                       
+[1166]    0F1D: E8 30 01                              CALL RESTORE_VIDEO_STATE
+[1167]        :                                       
+[1168]    0F20: BA EA 01                              MOV DX, OFFSET msg_complete
+[1169]    0F23: B4 09                                 MOV AH, 09h
+[1170]    0F25: CD 21                                 INT 21h
+[1171]        :                                       
+[1172]    0F27: BA 30 02                              MOV DX, OFFSET msg_press_key_vga
+[1173]    0F2A: B4 09                                 MOV AH, 09h
+[1174]    0F2C: CD 21                                 INT 21h
+[1175]        :                                       
+[1176]    0F2E: B4 01                                 MOV AH, 01h
+[1177]    0F30: CD 21                                 INT 21h
+[1178]        :                                       
+[1179]    0F32: EB B2                                 JMP VGA_MAIN_LOOP
+[1180]        :                                       
+[1181]    0F34:                                       VGA_INVALID_CHOICE:
+[1182]    0F34: BA 00 02                              MOV DX, OFFSET msg_invalid_vga
+[1183]    0F37: B4 09                                 MOV AH, 09h
+[1184]    0F39: CD 21                                 INT 21h
+[1185]    0F3B: EB A9                                 JMP VGA_MAIN_LOOP
+[1186]        :                                       
+[1187]    0F3D:                                       VGA_EXIT:
+[1188]    0F3D: E8 10 01                              CALL RESTORE_VIDEO_STATE
+[1189]    0F40: C3                                    RET
+[1190]        :                                       VGA_GRAPHICS_MAIN ENDP
+[1191]        :                                       
+[1192]    0F41:                                       DISPLAY_VGA_BANNER PROC
+[1193]    0F41: 50                                    PUSH AX
+[1194]    0F42: 52                                    PUSH DX
+[1195]        :                                       
+[1196]    0F43: BA 1B 01                              MOV DX, OFFSET msg_banner
+[1197]    0F46: B4 09                                 MOV AH, 09h
+[1198]    0F48: CD 21                                 INT 21h
+[1199]        :                                       
+[1200]    0F4A: 5A                                    POP DX
+[1201]    0F4B: 58                                    POP AX
+[1202]    0F4C: C3                                    RET
+[1203]        :                                       DISPLAY_VGA_BANNER ENDP
+[1204]        :                                       
+[1205]    0F4D:                                       DISPLAY_VGA_MENU PROC
+[1206]    0F4D: 50                                    PUSH AX
+[1207]    0F4E: 52                                    PUSH DX
+[1208]        :                                       
+[1209]    0F4F: BA 57 01                              MOV DX, OFFSET msg_menu_vga
+[1210]    0F52: B4 09                                 MOV AH, 09h
+[1211]    0F54: CD 21                                 INT 21h
+[1212]        :                                       
+[1213]    0F56: BA B8 01                              MOV DX, OFFSET msg_prompt_vga
+[1214]    0F59: B4 09                                 MOV AH, 09h
+[1215]    0F5B: CD 21                                 INT 21h
+[1216]        :                                       
+[1217]    0F5D: 5A                                    POP DX
+[1218]    0F5E: 58                                    POP AX
+[1219]    0F5F: C3                                    RET
+[1220]        :                                       DISPLAY_VGA_MENU ENDP
+[1221]        :                                       
+[1222]    0F60:                                       GET_VGA_CHOICE PROC
+[1223]    0F60: 50                                    PUSH AX
+[1224]        :                                       
+[1225]    0F61: B4 01                                 MOV AH, 01h
+[1226]    0F63: CD 21                                 INT 21h
+[1227]    0F65: A2 1A 01                              MOV user_choice_effect, AL
+[1228]        :                                       
+[1229]    0F68: 58                                    POP AX
+[1230]    0F69: C3                                    RET
+[1231]        :                                       GET_VGA_CHOICE ENDP
+[1232]        :                                       
+[1233]    0F6A:                                       SAVE_VIDEO_STATE PROC
+[1234]    0F6A: 50                                    PUSH AX
+[1235]        :                                       
+[1236]    0F6B: B4 0F                                 MOV AH, BIOS_GET_MODE
+[1237]    0F6D: CD 10                                 INT VIDEO_INT
+[1238]    0F6F: A2 18 01                              MOV original_video_mode, AL
+[1239]        :                                       
+[1240]    0F72: 58                                    POP AX
+[1241]    0F73: C3                                    RET
+[1242]        :                                       SAVE_VIDEO_STATE ENDP
+[1243]        :                                       
+[1244]    0F74:                                       INIT_GRAPHICS_MODE PROC
+[1245]    0F74: 50                                    PUSH AX
+[1246]        :                                       
+[1247]    0F75: B4 00                                 MOV AH, BIOS_SET_MODE
+[1248]    0F77: B0 13                                 MOV AL, MODE_VGA_13h
+[1249]    0F79: CD 10                                 INT VIDEO_INT
+[1250]        :                                       
+[1251]    0F7B: 58                                    POP AX
+[1252]    0F7C: C3                                    RET
+[1253]        :                                       INIT_GRAPHICS_MODE ENDP
+[1254]        :                                       
+[1255]    0F7D:                                       RENDER_SELECTED_EFFECT PROC
+[1256]    0F7D: 50                                    PUSH AX
+[1257]        :                                       
+[1258]    0F7E: A0 19 01                              MOV AL, selected_effect
+[1259]        :                                       
+[1260]    0F81: 3C 01                                 CMP AL, EFFECT_HORIZONTAL
+[1261]    0F83: 74 06                                 JE RENDER_HORIZ
+[1262]    0F85: 3C 02                                 CMP AL, EFFECT_PLASMA
+[1263]    0F87: 74 07                                 JE RENDER_PLASM
+[1264]    0F89: EB 08                                 JMP RENDER_DONE
+[1265]        :                                       
+[1266]    0F8B:                                       RENDER_HORIZ:
+[1267]    0F8B: E8 07 00                              CALL RENDER_HORIZONTAL
+[1268]    0F8E: EB 03                                 JMP RENDER_DONE
+[1269]        :                                       
+[1270]    0F90:                                       RENDER_PLASM:
+[1271]    0F90: E8 7A 00                              CALL RENDER_PLASMA
+[1272]        :                                       
+[1273]    0F93:                                       RENDER_DONE:
+[1274]    0F93: 58                                    POP AX
+[1275]    0F94: C3                                    RET
+[1276]        :                                       RENDER_SELECTED_EFFECT ENDP
+[1277]        :                                       
+[1278]    0F95:                                       RENDER_HORIZONTAL PROC
+[1279]    0F95: 50                                    PUSH AX
+[1280]    0F96: 53                                    PUSH BX
+[1281]    0F97: 51                                    PUSH CX
+[1282]    0F98: 52                                    PUSH DX
+[1283]    0F99: 57                                    PUSH DI
+[1284]    0F9A: 06                                    PUSH ES
+[1285]        :                                       
+[1286]    0F9B: B8 00 A0                              MOV AX, VGA_SEGMENT
+[1287]    0F9E: 8E C0                                 MOV ES, AX
+[1288]        :                                       
+[1289]    0FA0: BB 64 00                              MOV BX, CANVAS_HEIGHT
+[1290]    0FA3: BE 32 00                              MOV SI, CANVAS_START_Y
+[1291]        :                                       
+[1292]    0FA6:                                       HORIZ_ROW_LOOP:
+[1293]    0FA6: 8B C6                                 MOV AX, SI
+[1294]    0FA8: 53                                    PUSH BX
+[1295]    0FA9: BB 40 01                              MOV BX, 320
+[1296]    0FAC: F7 E3                                 MUL BX
+[1297]    0FAE: 5B                                    POP BX
+[1298]    0FAF: 05 50 00                              ADD AX, CANVAS_START_X
+[1299]    0FB2: 8B F8                                 MOV DI, AX
+[1300]        :                                       
+[1301]    0FB4: 33 D2                                 XOR DX, DX
+[1302]    0FB6: B9 50 00                              MOV CX, 80
+[1303]        :                                       
+[1304]    0FB9:                                       HORIZ_PAIR_LOOP:
+[1305]    0FB9: 8B C2                                 MOV AX, DX
+[1306]    0FBB: D1 E0 D1 E0 D1 E0 D1 E0 D1 E0 D1 E0   SHL AX, 8
+                D1 E0 D1 E0                         
+[1307]    0FCB: 52                                    PUSH DX
+[1308]    0FCC: BA 00 00                              MOV DX, 0
+[1309]    0FCF: 53                                    PUSH BX
+[1310]    0FD0: BB A0 00                              MOV BX, 160
+[1311]    0FD3: F7 F3                                 DIV BX
+[1312]    0FD5: 5B                                    POP BX
+[1313]    0FD6: 5A                                    POP DX
+[1314]    0FD7: 50                                    PUSH AX
+[1315]        :                                       
+[1316]    0FD8: 42                                    INC DX
+[1317]    0FD9: 8B C2                                 MOV AX, DX
+[1318]    0FDB: D1 E0 D1 E0 D1 E0 D1 E0 D1 E0 D1 E0   SHL AX, 8
+                D1 E0 D1 E0                         
+[1319]    0FEB: 52                                    PUSH DX
+[1320]    0FEC: BA 00 00                              MOV DX, 0
+[1321]    0FEF: 53                                    PUSH BX
+[1322]    0FF0: BB A0 00                              MOV BX, 160
+[1323]    0FF3: F7 F3                                 DIV BX
+[1324]    0FF5: 5B                                    POP BX
+[1325]    0FF6: 5A                                    POP DX
+[1326]    0FF7: 8A E0                                 MOV AH, AL
+[1327]    0FF9: 5B                                    POP BX
+[1328]    0FFA: 8A C3                                 MOV AL, BL
+[1329]    0FFC: 53                                    PUSH BX
+[1330]        :                                       
+[1331]    0FFD: AB                                    STOSW
+[1332]        :                                       
+[1333]    0FFE: 5B                                    POP BX
+[1334]    0FFF: 42                                    INC DX
+[1335]    1000: E2 B7                                 LOOP HORIZ_PAIR_LOOP
+[1336]        :                                       
+[1337]    1002: 46                                    INC SI
+[1338]    1003: 4B                                    DEC BX
+[1339]    1004: 75 A0                                 JNZ HORIZ_ROW_LOOP
+[1340]        :                                       
+[1341]    1006: 07                                    POP ES
+[1342]    1007: 5F                                    POP DI
+[1343]    1008: 5A                                    POP DX
+[1344]    1009: 59                                    POP CX
+[1345]    100A: 5B                                    POP BX
+[1346]    100B: 58                                    POP AX
+[1347]    100C: C3                                    RET
+[1348]        :                                       RENDER_HORIZONTAL ENDP
+[1349]        :                                       
+[1350]    100D:                                       RENDER_PLASMA PROC
+[1351]    100D: 50                                    PUSH AX
+[1352]    100E: 51                                    PUSH CX
+[1353]    100F: 52                                    PUSH DX
+[1354]    1010: 57                                    PUSH DI
+[1355]    1011: 56                                    PUSH SI
+[1356]    1012: 06                                    PUSH ES
+[1357]        :                                       
+[1358]    1013: B8 00 A0                              MOV AX, VGA_SEGMENT
+[1359]    1016: 8E C0                                 MOV ES, AX
+[1360]        :                                       
+[1361]    1018: 33 F6                                 XOR SI, SI
+[1362]        :                                       
+[1363]    101A:                                       PLASMA_ROW_LOOP:
+[1364]    101A: 8B C6                                 MOV AX, SI
+[1365]    101C: 05 32 00                              ADD AX, CANVAS_START_Y
+[1366]    101F: 53                                    PUSH BX
+[1367]    1020: BB 40 01                              MOV BX, 320
+[1368]    1023: F7 E3                                 MUL BX
+[1369]    1025: 5B                                    POP BX
+[1370]    1026: 05 50 00                              ADD AX, CANVAS_START_X
+[1371]    1029: 8B F8                                 MOV DI, AX
+[1372]        :                                       
+[1373]    102B: 33 D2                                 XOR DX, DX
+[1374]    102D: B9 50 00                              MOV CX, 80
+[1375]        :                                       
+[1376]    1030:                                       PLASMA_PAIR_LOOP:
+[1377]    1030: 8B C2                                 MOV AX, DX
+[1378]    1032: 03 C6                                 ADD AX, SI
+[1379]    1034: 50                                    PUSH AX
+[1380]        :                                       
+[1381]    1035: 42                                    INC DX
+[1382]    1036: 8B C2                                 MOV AX, DX
+[1383]    1038: 03 C6                                 ADD AX, SI
+[1384]    103A: 8A E0                                 MOV AH, AL
+[1385]    103C: 5B                                    POP BX
+[1386]    103D: 8A C3                                 MOV AL, BL
+[1387]        :                                       
+[1388]    103F: AB                                    STOSW
+[1389]        :                                       
+[1390]    1040: 42                                    INC DX
+[1391]    1041: E2 ED                                 LOOP PLASMA_PAIR_LOOP
+[1392]        :                                       
+[1393]    1043: 46                                    INC SI
+[1394]    1044: 83 FE 64                              CMP SI, CANVAS_HEIGHT
+[1395]    1047: 72 D1                                 JB PLASMA_ROW_LOOP
+[1396]        :                                       
+[1397]    1049: 07                                    POP ES
+[1398]    104A: 5E                                    POP SI
+[1399]    104B: 5F                                    POP DI
+[1400]    104C: 5A                                    POP DX
+[1401]    104D: 59                                    POP CX
+[1402]    104E: 58                                    POP AX
+[1403]    104F: C3                                    RET
+[1404]        :                                       RENDER_PLASMA ENDP
+[1405]        :                                       
+[1406]    1050:                                       RESTORE_VIDEO_STATE PROC
+[1407]    1050: 50                                    PUSH AX
+[1408]    1051: B4 00                                 MOV AH, BIOS_SET_MODE
+[1409]    1053: A0 18 01                              MOV AL, original_video_mode
+[1410]    1056: CD 10                                 INT VIDEO_INT
+[1411]    1058: 58                                    POP AX
+[1412]    1059: C3                                    RET
+[1413]        :                                       RESTORE_VIDEO_STATE ENDP
+[1414]        :                                       
+[1415]        :                                       END MAIN
+[1416]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: 5A      -   bytes on last page (l.byte)
+0003: 00      -   bytes on last page (h.byte)
+0004: 0A      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 02      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 01      -   SP - stack pointer (h.byte)
+0012: C2      -   check sum (l.byte)
+0013: F1      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 87      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 01      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 87      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022: 74      -   relocation table - offset inside segment (l.byte)
+0023: 00      -   relocation table - offset inside segment (h.byte)
+0024: 87      -   relocation table - segment anchor (l.byte)
+0025: 00      -   relocation table - segment anchor (h.byte)
+0026 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================

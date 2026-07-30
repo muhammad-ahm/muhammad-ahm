@@ -1,0 +1,429 @@
+/* styles.css — University Projects Portfolio */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0b0c10;
+  --surface:  #111318;
+  --border:   #1e2028;
+  --text:     #e8e9ef;
+  --muted:    #5a5f72;
+  --accent:   #f97316;
+  --accent2:  #fb923c;
+  --active-glow: rgba(249, 115, 22, 0.18);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Grain overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Hero Header ── */
+.hero {
+  padding: 5rem 0 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.hero-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.hero-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.hero-name span {
+  color: var(--accent);
+}
+
+.hero-sub {
+  color: var(--muted);
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.hero-location {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, color 0.2s;
+}
+.github-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* ── Section ── */
+.section {
+  padding: 3.5rem 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Semester Grid ── */
+#semester-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ── Semester Card ── */
+.sem-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.6rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sem-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--sem-color);
+  opacity: 0.7;
+}
+
+.sem-card.active {
+  border-color: rgba(249, 115, 22, 0.4);
+  box-shadow: 0 0 24px var(--active-glow);
+}
+
+.sem-card.active::before {
+  opacity: 1;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.sem-card:hover:not(.upcoming) {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 30px var(--active-glow);
+}
+
+.sem-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.75rem;
+  line-height: 1;
+}
+
+.sem-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.proj-count {
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.proj-count.muted {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.active-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.62rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+}
+
+/* ── Modal ── */
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+#modal.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#modal-content {
+  background: #13151c;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+  gap: 1rem;
+}
+
+.modal-sem-icon {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.github-link {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.github-link:hover { text-decoration: underline; }
+
+.close-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s;
+}
+.close-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Project Card (inside modal) ── */
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.project-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.4rem;
+  transition: border-color 0.2s;
+}
+.project-card:hover { border-color: rgba(249, 115, 22, 0.3); }
+
+.proj-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.proj-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.proj-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.proj-subtitle {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.proj-type {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.proj-desc {
+  font-size: 0.87rem;
+  color: #9ca3af;
+  line-height: 1.65;
+  margin-bottom: 0.85rem;
+}
+
+.proj-highlight {
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tag {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+  font-family: 'DM Sans', monospace;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  #semester-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-meta {
+    align-items: flex-start;
+  }
+  #modal-content {
+    padding: 1.4rem;
+  }
+}

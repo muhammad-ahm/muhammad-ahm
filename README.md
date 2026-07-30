@@ -124,5 +124,7 @@ Right now I'm getting more serious about React and slowly learning what it takes
 ## Contact
 
 Email — [muhammzd.ahmed.mh@gmail.com](mailto:muhammzd.ahmed.mh@gmail.com)
+
 LinkedIn — [linkedin.com/in/Muhammad-ahm](https://linkedin.com/in/Muhammad-ahm)
+
 Location — Karachi, Sindh, Pakistan

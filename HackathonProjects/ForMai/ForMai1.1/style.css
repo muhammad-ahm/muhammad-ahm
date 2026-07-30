@@ -1,0 +1,78 @@
+/* style.css — ForMai Popup Styles */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    width: 260px;
+    background: #0D1420;
+    color: #EAF2FF;
+    overflow: hidden;
+}
+
+.popup-header {
+    background: linear-gradient(135deg, #0D1420 0%, #112036 100%);
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(61,169,255,.15);
+    display: flex; align-items: center; justify-content: space-between;
+}
+.popup-logo { display:flex; align-items:center; gap:6px; }
+.logo-icon  { font-size:18px; }
+.logo-text  { font-size:17px; font-weight:700; color:#3DA9FF; letter-spacing:.02em; }
+.popup-tagline { font-size:10px; color:#4a7096; text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
+
+.popup-status-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 12px 16px;
+    background: rgba(61,169,255,.04);
+    border-bottom: 1px solid rgba(61,169,255,.1);
+}
+.status-label { font-size:14px; font-weight:600; transition:color .2s; }
+.status-active { color:#4ade80; }
+.status-paused { color:#f87171; }
+
+/* Toggle switch */
+.toggle-switch { position:relative; width:42px; height:24px; cursor:pointer; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+    position:absolute; inset:0; background:#1e3050; border-radius:24px;
+    transition:background .25s; border:1.5px solid rgba(61,169,255,.2);
+}
+.toggle-slider::before {
+    content:""; position:absolute; width:16px; height:16px;
+    left:3px; top:50%; transform:translateY(-50%);
+    background:#4a7096; border-radius:50%; transition:transform .25s, background .25s;
+}
+.toggle-switch input:checked + .toggle-slider { background:rgba(61,169,255,.2); border-color:#3DA9FF; }
+.toggle-switch input:checked + .toggle-slider::before { transform:translateX(18px) translateY(-50%); background:#3DA9FF; }
+
+.popup-description {
+    padding: 11px 16px 10px;
+    font-size: 12px; color: #6a8aaa; line-height:1.6;
+}
+.popup-description strong { color:#9cc7f0; }
+
+/* Snip button */
+.snip-button {
+    display: block; width: calc(100% - 32px); margin: 2px 16px 12px;
+    padding: 9px 14px;
+    background: rgba(61,169,255,.13);
+    border: 1.5px solid rgba(61,169,255,.35);
+    border-radius: 8px;
+    color: #7fc8ff; font-size:13px; font-weight:600;
+    cursor: pointer; letter-spacing:.02em;
+    transition: background .18s, border-color .18s;
+}
+.snip-button:hover:not(:disabled) { background:rgba(61,169,255,.22); border-color:#3DA9FF; color:#b8e0ff; }
+
+.popup-divider { height:1px; background:rgba(61,169,255,.1); margin:0 16px; }
+
+
+.site-button {
+    display:block; margin:4px 16px 16px;
+    padding:9px 14px;
+    background:rgba(61,169,255,.08); border:1px solid rgba(61,169,255,.22);
+    border-radius:8px; color:#3DA9FF; font-size:12px; font-weight:600;
+    text-align:center; text-decoration:none; cursor:pointer;
+    transition:background .18s, border-color .18s; letter-spacing:.02em;
+}
+.site-button:hover { background:rgba(61,169,255,.18); border-color:#3DA9FF; color:#7fc8ff; }

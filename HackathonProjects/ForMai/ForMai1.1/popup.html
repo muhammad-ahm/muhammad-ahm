@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>ForMai</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div class="popup-header">
+        <div class="popup-logo">
+            <span class="logo-text">ForMai</span>
+        </div>
+        <span class="popup-tagline">AI Form Assistant</span>
+    </div>
+
+    <div class="popup-status-row">
+        <span id="status-label" class="status-label status-active">Active</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="toggle-checkbox" checked />
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+
+    <p class="popup-description">
+        Click any form field for an instant AI explanation, or use <strong>Snip Mode</strong> to analyze a whole form area.
+    </p>
+
+    <button id="snip-btn" class="snip-button">
+        &nbsp;Start Snip Mode
+    </button>
+
+    <div class="popup-divider"></div>
+
+    <a id="page-link" class="site-button" href="#" id="open-page">
+        &nbsp;About ForMai
+    </a>
+
+    <script src="popup.js"></script>
+</body>
+</html>

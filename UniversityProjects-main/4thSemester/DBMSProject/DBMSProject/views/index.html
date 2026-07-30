@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <script src="app.js"></script>
+  <title>Probation Report</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    h2 { color: #3b5bdb; font-size: 16px; margin-bottom: 6px; }
+    .row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
+    .row a {
+      color: #000;
+      text-decoration: none;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+    .row a:hover { text-decoration: underline; }
+    .row a.selected {
+      background-color: #7CFC9C;
+    }
+    .reset { margin-bottom: 15px; }
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #808080; padding: 6px 10px; }
+  </style>
+</head>
+<body x-data="App()" x-init="init()">
+
+  <div class="reset">
+    <a href="#" @click.prevent="reset()">Reset</a>
+  </div>
+
+  <h2>Year</h2>
+  <div class="row">
+    <template x-for="y in years" :key="y.year">
+      <a href="#"
+         :class="{ selected: y.year === selectedYear }"
+         @click.prevent="selectYear(y.year)"
+         x-text="y.year"></a>
+    </template>
+  </div>
+
+  <template x-if="semesters.length">
+    <div>
+      <h2>Semesters</h2>
+      <div class="row">
+        <template x-for="s in semesters" :key="s.semester">
+          <a href="#"
+             :class="{ selected: s.semester === selectedSemester }"
+             @click.prevent="selectSemester(s.semester)"
+             x-text="s.semester"></a>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <template x-if="batches.length">
+    <div>
+      <h2>Batches</h2>
+      <div class="row">
+        <template x-for="b in batches" :key="b.class">
+          <a href="#"
+             :class="{ selected: b.class === selectedClass }"
+             @click.prevent="selectBatch(b.class)"
+             x-text="b.class"></a>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <template x-if="recaps.length">
+    <div>
+      <h2>Recaps</h2>
+      <div class="row">
+        <template x-for="r in recaps" :key="r.rid">
+          <a href="#"
+             :class="{ selected: r.rid === selectedRid }"
+             @click.prevent="selectRecap(r.rid)"
+             x-text="r.code + ' - ' + r.title"></a>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <template x-if="students.length">
+    <div>
+      <h2>Students on Probation</h2>
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Regno</th>
+            <th>Name</th>
+            <th>SGPA</th>
+          </tr>
+          <template x-for="s in students" :key="s.regno">
+            <tr>
+              <td x-text="s.regno"></td>
+              <td x-text="s.name"></td>
+              <td x-text="s.sgpa"></td>
+            </tr>
+          </template>
+        </table>
+      </div>
+    </div>
+  </template>
+
+</body>
+</html>
